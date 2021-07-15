@@ -134,7 +134,8 @@ jobs:
 
       - name: Run tests
         # shell: bash
-        run: nimble test
+        # run: nimble test
+        run: nim c -r tests/fake_test.nim
 
       # - name: Build docs
       #   if: matrix.branch == 'devel'
