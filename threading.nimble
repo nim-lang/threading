@@ -10,3 +10,7 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.4"
+
+
+task test:
+  exec "nim c -r tests/fake_test.nim"
