@@ -128,7 +128,7 @@ jobs:
       - name: Setup Nim
         uses: alaviss/setup-nim@0.1.1
         with:
-          path: nim
+          path: 'nim'
           version: ${{ matrix.nim_branch }}
           architecture: ${{ matrix.target.cpu }}
 
@@ -154,4 +154,4 @@ jobs:
           target_branch: gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
