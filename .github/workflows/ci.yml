@@ -135,6 +135,7 @@ jobs:
       - name: Run tests
         # shell: bash
         # run: nimble test
+        run: pwd
         run: nim c -r tests/fake_test.nim
 
       # - name: Build docs
