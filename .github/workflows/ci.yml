@@ -129,7 +129,7 @@ jobs:
         uses: alaviss/setup-nim@0.1.1
         with:
           path: 'nim'
-          version: ${{ matrix.nim_branch }}
+          version: ${{ matrix.target.nim_branch }}
           architecture: ${{ matrix.target.cpu }}
 
       - name: Run tests
