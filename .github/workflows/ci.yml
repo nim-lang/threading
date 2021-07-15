@@ -133,7 +133,7 @@ jobs:
           architecture: ${{ matrix.target.cpu }}
 
       - name: Run tests
-        working-directory: threading
+        working-directory: 'threading'
         shell: bash
         run: nimble test
 
