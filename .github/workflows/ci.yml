@@ -14,31 +14,31 @@ jobs:
             nim_branch: devel
           - os: linux
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: linux
             cpu: i386
             nim_branch: devel
           - os: linux
             cpu: i386
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: macos
             cpu: amd64
             nim_branch: devel
           - os: macos
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: windows
             cpu: amd64
             nim_branch: devel
           - os: windows
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: windows
             cpu: i386
             nim_branch: devel
           - os: windows
             cpu: i386
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
         include:
           - target:
               os: linux
