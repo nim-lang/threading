@@ -14,31 +14,31 @@ jobs:
             nim_branch: devel
           - os: linux
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: linux
             cpu: i386
             nim_branch: devel
           - os: linux
             cpu: i386
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: macos
             cpu: amd64
             nim_branch: devel
           - os: macos
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: windows
             cpu: amd64
             nim_branch: devel
           - os: windows
             cpu: amd64
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
           - os: windows
             cpu: i386
             nim_branch: devel
           - os: windows
             cpu: i386
-            nim_branch: v1.4.8
+            nim_branch: version-1-4
         include:
           - target:
               os: linux
@@ -60,7 +60,7 @@ jobs:
       - name: Checkout threading
         uses: actions/checkout@v2
         with:
-          path: asynctools
+          path: threading
           submodules: false
 
       - name: Restore MinGW-W64 (Windows) from cache
@@ -128,30 +128,31 @@ jobs:
       - name: Setup Nim
         uses: alaviss/setup-nim@0.1.1
         with:
-          path: nim
-          version: ${{ matrix.branch }}
+          path: 'nim'
+          version: ${{ matrix.target.nim_branch }}
           architecture: ${{ matrix.target.cpu }}
 
       - name: Run tests
-        shell: bash
-        run: nimble test
+        run: |
+          cd threading
+          nimble test
 
-      - name: Build docs
-        if: matrix.branch == 'devel'
-        run: nimble docs
+      # - name: Build docs
+      #   if: matrix.branch == 'devel'
+      #   run: nimble docs
 
-      - name: Deploy docs
-        # to view docs on your own fork: push a gh-pages branch on your fork,
-        # enable gh-pages in your fork
-        # and remove `github.ref == 'refs/heads/master'` below
-        if: |
-          github.event_name == 'push' && github.ref == 'refs/heads/master' &&
-          matrix.target.os == 'linux' && matrix.target.cpu == 'amd64' &&
-          matrix.branch == 'devel'
-        uses: crazy-max/ghaction-github-pages@v1
-        with:
-          build_dir: fusion/htmldocs
-          target_branch: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+      # - name: Deploy docs
+      #   # to view docs on your own fork: push a gh-pages branch on your fork,
+      #   # enable gh-pages in your fork
+      #   # and remove `github.ref == 'refs/heads/master'` below
+      #   if: |
+      #     github.event_name == 'push' && github.ref == 'refs/heads/master' &&
+      #     matrix.target.os == 'linux' && matrix.target.cpu == 'amd64' &&
+      #     matrix.branch == 'devel'
+      #   uses: crazy-max/ghaction-github-pages@v1
+      #   with:
+      #     build_dir: fusion/htmldocs
+      #     target_branch: gh-pages
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
