@@ -12,5 +12,5 @@ srcDir        = "src"
 requires "nim >= 1.4"
 
 
-task test:
+task test, "runs the tests":
   exec "nim c -r tests/fake_test.nim"
