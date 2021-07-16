@@ -133,11 +133,9 @@ jobs:
           architecture: ${{ matrix.target.cpu }}
 
       - name: Run tests
-        # shell: bash
-        # run: nimble test
         run: |
-          ls -lah threading
-          nim c -r threading/tests/fake_test.nim
+          cd threading
+          nimble test
 
       # - name: Build docs
       #   if: matrix.branch == 'devel'
