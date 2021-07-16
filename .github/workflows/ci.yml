@@ -136,9 +136,8 @@ jobs:
         # shell: bash
         # run: nimble test
         run: |
-          ls -lah
-          ls -lah ..
-          nim c -r tests/fake_test.nim
+          ls -lah threading
+          nim c -r threading/tests/fake_test.nim
 
       # - name: Build docs
       #   if: matrix.branch == 'devel'
