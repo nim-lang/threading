@@ -60,7 +60,7 @@ jobs:
       - name: Checkout threading
         uses: actions/checkout@v2
         with:
-          path: asynctools
+          path: threading
           submodules: false
 
       - name: Restore MinGW-W64 (Windows) from cache
