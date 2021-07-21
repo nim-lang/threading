@@ -1,4 +1,4 @@
-import sync/smartptrs
+import threading/smartptrs
 
 block:
   var a1: UniquePtr[int]

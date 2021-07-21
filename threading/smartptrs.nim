@@ -7,7 +7,7 @@
 #    distribution, for details about the copyright.
 
 ## C++11 like smart pointers. They always use the shared allocator.
-import std/isolation, atomics2
+import std/isolation, atomics
 from typetraits import supportsCopyMem
 
 template checkNotNil(p, msg: typed) =

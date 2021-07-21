@@ -1,4 +1,4 @@
-import std/bitops, sync/atomics2
+import std/bitops, threading/atomics
 # Atomic operations for trivial objects
 
 block trivialLoad:
