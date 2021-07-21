@@ -10,11 +10,14 @@
 import std/isolation, atomics
 from typetraits import supportsCopyMem
 
-template checkNotNil(p, msg: typed) =
+proc raiseNilAccess() {.noinline.} =
+  raise newException(NilAccessDefect, "dereferencing nil smart pointer")
+
+template checkNotNil(p: typed) =
   when compileOption("boundChecks"):
     {.line.}:
       if p.isNil:
-        raise newException(NilAccessDefect, msg)
+        raiseNilAccess()
 
 type
   UniquePtr*[T] = object
@@ -55,11 +58,11 @@ proc isNil*[T](p: UniquePtr[T]): bool {.inline.} =
 
 proc `[]`*[T](p: UniquePtr[T]): var T {.inline.} =
   ## Returns a mutable view of the internal value of `p`.
-  checkNotNil(p, "dereferencing nil unique pointer")
+  checkNotNil(p)
   p.val[]
 
 proc `[]=`*[T](p: UniquePtr[T], val: sink Isolated[T]) {.inline.} =
-  checkNotNil(p, "dereferencing nil unique pointer")
+  checkNotNil(p)
   p.val[] = extract val
 
 template `[]=`*[T](p: UniquePtr[T]; val: T) =
@@ -114,11 +117,11 @@ proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
   p.val == nil
 
 proc `[]`*[T](p: SharedPtr[T]): var T {.inline.} =
-  checkNotNil(p, "dereferencing nil shared pointer")
+  checkNotNil(p)
   p.val.value
 
 proc `[]=`*[T](p: SharedPtr[T], val: sink Isolated[T]) {.inline.} =
-  checkNotNil(p, "dereferencing nil shared pointer")
+  checkNotNil(p)
   p.val.value = extract val
 
 template `[]=`*[T](p: SharedPtr[T]; val: T) =
@@ -146,7 +149,7 @@ proc isNil*[T](p: ConstPtr[T]): bool {.inline.} =
 
 proc `[]`*[T](p: ConstPtr[T]): lent T {.inline.} =
   ## Returns an immutable view of the internal value of `p`.
-  checkNotNil(p, "dereferencing nil const pointer")
+  checkNotNil(p)
   SharedPtr[T](p).val.value
 
 proc `[]=`*[T](p: ConstPtr[T], v: T) = {.error: "`ConstPtr` cannot be assigned.".}
