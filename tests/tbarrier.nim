@@ -5,7 +5,7 @@ const
   numIters = 100
 
 var
-  barrier: Barrier
+  b: Barrier
   phases: array[numThreads, int]
   threads: array[numThreads, Thread[int]]
 
@@ -14,13 +14,13 @@ proc routine(id: int) =
     phases[id] = i
     if (id + i) mod numThreads == 0:
       sleep 1
-    wait barrier
+    wait b
     for j in 0 ..< numThreads:
       assert phases[j] == i, &"{id} in phase {i} sees {j} in phase {phases[j]}"
-    wait barrier
+    wait b
 
 proc testBarrier =
-  init barrier, numThreads
+  init b, numThreads
   for i in 0 ..< numThreads:
     createThread(threads[i], routine, i)
   joinThreads(threads)
