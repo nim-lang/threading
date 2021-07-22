@@ -1,4 +1,4 @@
-import threading/once
+import threading/[once, atomics]
 
 const
   numThreads = 10
