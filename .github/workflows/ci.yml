@@ -15,12 +15,12 @@ jobs:
           - os: linux
             cpu: amd64
             nim_branch: version-1-4
-          - os: linux
-            cpu: i386
-            nim_branch: devel
-          - os: linux
-            cpu: i386
-            nim_branch: version-1-4
+          # - os: linux
+          #   cpu: i386
+          #   nim_branch: devel
+          # - os: linux
+          #   cpu: i386
+          #   nim_branch: version-1-4
           - os: macos
             cpu: amd64
             nim_branch: devel
