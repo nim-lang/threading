@@ -63,11 +63,10 @@ proc tryPush*[T](self: var SpscQueue[T]; value: var Isolated[T]): bool {.
   if nextHead == self.cachedTail:
     self.cachedTail = self.tail.load(Acquire)
     if nextHead == self.cachedTail:
-      result = false
-  else:
-    self.data[head + Pad] = extract value
-    self.head.store(nextHead, Release)
-    result = true
+      return false
+  self.data[head + Pad] = extract value
+  self.head.store(nextHead, Release)
+  result = true
 
 template tryPush*[T](self: SpscQueue[T]; value: T): bool =
   ## .. warning:: Using this template in a loop causes multiple evaluations of `value`.
@@ -80,14 +79,13 @@ proc tryPop*[T](self: var SpscQueue[T]; value: var T): bool =
   if tail == self.cachedHead:
     self.cachedHead = self.head.load(Acquire)
     if tail == self.cachedHead:
-      result = false
-  else:
-    value = move self.data[tail + Pad]
-    var nextTail = tail + 1
-    if nextTail == self.cap:
-      nextTail = 0
-    self.tail.store(nextTail, Release)
-    result = true
+      return false
+  value = move self.data[tail + Pad]
+  var nextTail = tail + 1
+  if nextTail == self.cap:
+    nextTail = 0
+  self.tail.store(nextTail, Release)
+  result = true
 
 when isMainModule:
   # Don't move this test
