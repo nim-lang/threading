@@ -82,7 +82,7 @@ type
 proc `=destroy`*[T](p: var SharedPtr[T]) =
   if p.val != nil:
     if p.val[].counter.load(Consume) == 0:
-      `=destroy`(p.val[])
+      `=destroy`(p.val[].value)
       deallocShared(p.val)
     else:
       atomicDec(p.val[].counter)

@@ -135,7 +135,7 @@ jobs:
       - name: Run tests
         run: |
           cd threading
-          nimble --threads:on test
+          nimble --threads:on --gc:orc test
 
       # - name: Build docs
       #   if: matrix.branch == 'devel'
