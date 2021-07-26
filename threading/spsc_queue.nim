@@ -7,7 +7,7 @@
 #    distribution, for details about the copyright.
 #
 # Nim port of https://github.com/rigtorp/SPSCQueue
-import std/isolation, atomics2
+import std/isolation, atomics
 from std/typetraits import supportsCopyMem
 
 const
