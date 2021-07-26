@@ -1,4 +1,4 @@
-import os, sync/spsc_queue
+import os, threading/spsc_queue
 
 const
   numIters = 200

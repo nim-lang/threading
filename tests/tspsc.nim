@@ -1,4 +1,4 @@
-import sync/spsc, std/isolation
+import threading/spsc, std/isolation
 
 const
   seed = 99
