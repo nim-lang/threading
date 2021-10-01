@@ -3,7 +3,7 @@ discard """
   disabled: "freebsd"
 """
 
-import std/channels
+import threading/channels
 import std/os
 
 var chan = newChannel[string]()
