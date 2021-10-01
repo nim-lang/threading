@@ -1,3 +1,12 @@
+#
+#
+#                                    Nim's Runtime Library
+#        (c) Copyright 2021 Andreas Prell, Mamy André-Ratsimbazafy & Nim Contributors
+#
+#    See the file "copying.txt", included in this
+#    distribution, for details about the copyright.
+#
+
 # Based on https://github.com/mratsim/weave/blob/5696d94e6358711e840f8c0b7c684fcc5cbd4472/unused/channels/channels_legacy.nim
 # Those are translations of @aprell (Andreas Prell) original channels from C to Nim
 # (https://github.com/aprell/tasking-2.0/blob/master/src/channel_shm/channel.c)
