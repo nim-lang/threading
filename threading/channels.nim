@@ -22,7 +22,7 @@
 ##
 ## The following is a simple example of two different ways to use channels:
 ## blocking and non-blocking.
-## 
+##
 
 runnableExamples("--threads:on --gc:orc"):
   import std/os
@@ -92,10 +92,6 @@ import system/ansi_c
 # Channel (Shared memory channels)
 # ----------------------------------------------------------------------------------
 
-const
-  cacheLineSize {.intdefine.} = 64 # TODO: some Samsung phone have 128 cache-line
-  nimChannelCacheSize* {.intdefine.} = 100
-
 type
   ChannelRaw = ptr ChannelObj
   ChannelObj = object
@@ -104,7 +100,7 @@ type
     closed: Atomic[bool]
     size: int
     itemsize: int # up to itemsize bytes can be exchanged over this channel
-    head {.align: cacheLineSize.} : int     # Items are taken from head and new items are inserted at tail
+    head: int     # Items are taken from head and new items are inserted at tail
     tail: int
     buffer: ptr UncheckedArray[byte]
     atomicCounter: Atomic[int]
@@ -115,7 +111,6 @@ type
     chanSize: int
     chanN: int
     numCached: int
-    cache: array[nimChannelCacheSize, ChannelRaw]
 
 # ----------------------------------------------------------------------------------
 
@@ -158,75 +153,11 @@ proc isClosed(chan: ChannelRaw): bool {.inline.} = load(chan.closed, moRelaxed)
 proc peek(chan: ChannelRaw): int {.inline.} =
   (if chan.isUnbuffered: numItemsUnbuf(chan) else: numItems(chan))
 
-# Per-thread channel cache
-# ----------------------------------------------------------------------------------
-
-var channelCache {.threadvar.}: ChannelCache
-var channelCacheLen {.threadvar.}: int
-
-proc allocChannelCache(size, n: int): bool =
-  ## Allocate a free list for storing channels of a given type
-  var p = channelCache
-
-  # Avoid multiple free lists for the exact same type of channel
-  while not p.isNil:
-    if size == p.chanSize and n == p.chanN:
-      return false
-    p = p.next
-
-  p = cast[ptr ChannelCacheObj](c_malloc(csize_t sizeof(ChannelCacheObj)))
-
-  p.chanSize = size
-  p.chanN = n
-  p.numCached = 0
-
-  p.next = channelCache
-  channelCache = p
-  inc channelCacheLen
-  result = true
-
-proc freeChannelCache*() =
-  ## Frees the entire channel cache, including all channels
-  var p = channelCache
-  var q: ChannelCache
-
-  while not p.isNil:
-    q = p.next
-    for i in 0 ..< p.numCached:
-      let chan = p.cache[i]
-      if not chan.buffer.isNil:
-        c_free(chan.buffer)
-      deinitLock(chan.lock)
-      deinitCond(chan.notFullCond)
-      deinitCond(chan.notEmptyCond)
-      c_free(chan)
-    c_free(p)
-    dec channelCacheLen
-    p = q
-
-  assert(channelCacheLen == 0)
-  channelCache = nil
 
 # Channels memory ops
 # ----------------------------------------------------------------------------------
 
 proc allocChannel(size, n: int): ChannelRaw =
-  when nimChannelCacheSize > 0:
-    var p = channelCache
-
-    while not p.isNil:
-      if size == p.chanSize and n == p.chanN:
-        # Check if free list contains channel
-        if p.numCached > 0:
-          dec p.numCached
-          result = p.cache[p.numCached]
-          assert(result.isEmpty)
-          return
-        else:
-          # All the other lists in cache won't match
-          break
-      p = p.next
-
   result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
 
   # To buffer n items, we allocate for n
@@ -243,28 +174,10 @@ proc allocChannel(size, n: int): ChannelRaw =
   result.tail = 0
   result.atomicCounter.store(0, moRelaxed)
 
-  when nimChannelCacheSize > 0:
-    # Allocate a cache as well if one of the proper size doesn't exist
-    discard allocChannelCache(size, n)
 
 proc freeChannel(chan: ChannelRaw) =
   if chan.isNil:
     return
-
-  when nimChannelCacheSize > 0:
-    var p = channelCache
-    while not p.isNil:
-      if chan.itemsize == p.chanSize and
-         chan.size == p.chanN:
-        if p.numCached < nimChannelCacheSize:
-          # If space left in cache, cache it
-          p.cache[p.numCached] = chan
-          inc p.numCached
-          return
-        else:
-          # All the other lists in cache won't match
-          break
-      p = p.next
 
   if not chan.buffer.isNil:
     c_free(chan.buffer)
