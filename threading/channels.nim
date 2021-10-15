@@ -312,25 +312,6 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, nonBlocking: bool): bo
   signal(chan.notFullCond)
   result = true
 
-proc channelCloseMpmc(chan: ChannelRaw): bool =
-  # Unsynchronized
-
-  if chan.isClosed:
-    # ChannelRaw already closed
-    return false
-
-  store(chan.closed, true, moRelaxed)
-  result = true
-
-proc channelOpenMpmc(chan: ChannelRaw): bool =
-  # Unsynchronized
-
-  if not chan.isClosed:
-    # ChannelRaw already open
-    return false
-
-  store(chan.closed, false, moRelaxed)
-  result = true
 
 # Public API
 # ----------------------------------------------------------------------------------
@@ -400,11 +381,11 @@ func recvIso*[T](c: Channel[T]): Isolated[T] {.inline.} =
   discard channelReceive(c, dst.addr, sizeof(dst), false)
   result = isolate(dst)
 
-func open*[T](c: Channel[T]): bool {.inline.} =
-  result = c.d.channelOpenMpmc()
+func open*[T](c: Channel[T]) {.inline.} =
+  store(c.d.closed, false, moRelaxed)
 
-func close*[T](c: Channel[T]): bool {.inline.} =
-  result = c.d.channelCloseMpmc()
+func close*[T](c: Channel[T]) {.inline.} =
+  store(c.d.closed, true, moRelaxed)
 
 func peek*[T](c: Channel[T]): int {.inline.} = peek(c.d)
 

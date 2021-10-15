@@ -55,7 +55,7 @@ while true:
 worker2.joinThread()
 
 # Clean up the channel.
-doAssert chan.close()
+chan.close()
 doAssert messages[^1] == "Another message"
 doAssert messages.len >= 2
 
