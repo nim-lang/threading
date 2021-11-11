@@ -45,7 +45,7 @@ while true:
   if tried:
     messages.add move(msg)
     break
-  
+
   messages.add "Pretend I'm doing useful work..."
   # For this example, sleep in order not to flood stdout with the above
   # message.
@@ -55,7 +55,6 @@ while true:
 worker2.joinThread()
 
 # Clean up the channel.
-chan.close()
 doAssert messages[^1] == "Another message"
 doAssert messages.len >= 2
 
