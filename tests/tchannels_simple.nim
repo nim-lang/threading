@@ -6,7 +6,7 @@ discard """
 import threading/channels
 import std/os
 
-var chan = newChannel[string]()
+var chan = newChan[string]()
 
 # This proc will be run in another thread using the threads module.
 proc firstWorker() =
@@ -60,9 +60,8 @@ doAssert messages.len >= 2
 
 
 block:
-  let chan0 = newChannel[int]()
+  let chan0 = newChan[int]()
   let chan1 = chan0
   block:
     let chan3 = chan0
     let chan4 = chan0
-

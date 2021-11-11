@@ -317,10 +317,10 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, nonBlocking: bool): bo
 # ----------------------------------------------------------------------------------
 
 type
-  Channel*[T] = object ## Typed channels
+  Chan*[T] = object ## Typed channels
     d: ChannelRaw
 
-proc `=destroy`*[T](c: var Channel[T]) =
+proc `=destroy`*[T](c: var Chan[T]) =
   if c.d != nil:
     if load(c.d.atomicCounter, moAcquire) == 0:
       if c.d.buffer != nil:
@@ -328,7 +328,7 @@ proc `=destroy`*[T](c: var Channel[T]) =
     else:
       atomicDec(c.d.atomicCounter)
 
-proc `=`*[T](dest: var Channel[T], src: Channel[T]) =
+proc `=`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
     atomicInc(src.d.atomicCounter)
@@ -337,32 +337,32 @@ proc `=`*[T](dest: var Channel[T], src: Channel[T]) =
     `=destroy`(dest)
   dest.d = src.d
 
-proc channelSend[T](chan: Channel[T], data: T, size: int, nonBlocking: bool): bool {.inline.} =
+proc channelSend[T](chan: Chan[T], data: T, size: int, nonBlocking: bool): bool {.inline.} =
   ## Send item to the channel (FIFO queue)
   ## (Insert at last)
   sendMpmc(chan.d, data.unsafeAddr, size, nonBlocking)
 
-proc channelReceive[T](chan: Channel[T], data: ptr T, size: int, nonBlocking: bool): bool {.inline.} =
+proc channelReceive[T](chan: Chan[T], data: ptr T, size: int, nonBlocking: bool): bool {.inline.} =
   ## Receive an item from the channel
   ## (Remove the first item)
   recvMpmc(chan.d, data, size, nonBlocking)
 
-proc trySend*[T](c: Channel[T], src: var Isolated[T]): bool {.inline.} =
+proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Sends item to the channel(non blocking).
   var data = src.extract
   result = channelSend(c, data, sizeof(data), true)
   if result:
     wasMoved(data)
 
-template trySend*[T](c: Channel[T], src: T): bool =
+template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper templates for `trySend`.
   trySend(c, isolate(src))
 
-proc tryRecv*[T](c: Channel[T], dst: var T): bool {.inline.} =
+proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Receives item from the channel(non blocking).
   channelReceive(c, dst.addr, sizeof(dst), true)
 
-proc send*[T](c: Channel[T], src: sink Isolated[T]) {.inline.} =
+proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   ## Sends item to the channel(blocking).
   var data = src.extract
   when defined(gcOrc) and defined(nimSafeOrcSend):
@@ -370,29 +370,28 @@ proc send*[T](c: Channel[T], src: sink Isolated[T]) {.inline.} =
   discard channelSend(c, data, sizeof(data), false)
   wasMoved(data)
 
-template send*[T](c: var Channel[T]; src: T) =
+template send*[T](c: var Chan[T]; src: T) =
   ## Helper templates for `send`.
   send(c, isolate(src))
 
-proc recv*[T](c: Channel[T], dst: var T) {.inline.} =
+proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
   ## Receives item from the channel(blocking).
   discard channelReceive(c, dst.addr, sizeof(dst), false)
 
-proc recvIso*[T](c: Channel[T]): Isolated[T] {.inline.} =
+proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
   var dst: T
   discard channelReceive(c, dst.addr, sizeof(dst), false)
   result = isolate(dst)
 
 when false:
-  proc open*[T](c: Channel[T]) {.inline.} =
+  proc open*[T](c: Chan[T]) {.inline.} =
     store(c.d.closed, false, moRelaxed)
 
-  proc close*[T](c: Channel[T]) {.inline.} =
+  proc close*[T](c: Chan[T]) {.inline.} =
     store(c.d.closed, true, moRelaxed)
 
-proc peek*[T](c: Channel[T]): int {.inline.} = peek(c.d)
+proc peek*[T](c: Chan[T]): int {.inline.} = peek(c.d)
 
-proc newChannel*[T](elements = 30): Channel[T] =
+proc newChan*[T](elements = 30): Chan[T] =
   assert elements >= 1, "Elements must be positive!"
-  result = Channel[T](d: allocChannel(sizeof(T), elements))
-
+  result = Chan[T](d: allocChannel(sizeof(T), elements))
