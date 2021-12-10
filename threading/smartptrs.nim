@@ -81,9 +81,11 @@ type
 
 proc `=destroy`*[T](p: var SharedPtr[T]) =
   if p.val != nil:
-    if fetchSub(p.val[].counter, 1, AcqRel) == 0:
+    if p.val[].counter.load(Acquire) == 0:
       `=destroy`(p.val[])
       deallocShared(p.val)
+    else:
+      discard fetchSub(p.val[].counter, 1, Release)
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
   if src.val != nil:
