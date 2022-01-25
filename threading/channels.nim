@@ -31,7 +31,7 @@ runnableExamples("--threads:on --gc:orc"):
   # Channels are generic, and they include support for passing objects between
   # threads.
   # Note that isolated data passed through channels is moved around.
-  var chan = newChannel[string]()
+  var chan = newChan[string]()
 
   # This proc will be run in another thread using the threads module.
   proc firstWorker() =
