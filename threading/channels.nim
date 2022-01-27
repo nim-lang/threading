@@ -370,7 +370,7 @@ proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   discard channelSend(c, data, sizeof(data), false)
   wasMoved(data)
 
-template send*[T](c: var Chan[T]; src: T) =
+template send*[T](c: Chan[T]; src: T) =
   ## Helper templates for `send`.
   send(c, isolate(src))
 
