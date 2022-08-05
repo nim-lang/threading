@@ -81,15 +81,15 @@ type
 
 proc `=destroy`*[T](p: var SharedPtr[T]) =
   if p.val != nil:
-    if p.val[].counter.load(Consume) == 0:
+    if p.val[].counter.load(Acquire) == 0:
       `=destroy`(p.val[].value)
       deallocShared(p.val)
     else:
-      atomicDec(p.val[].counter)
+      discard fetchSub(p.val[].counter, 1, Release)
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
   if src.val != nil:
-    atomicInc(src.val[].counter)
+    discard fetchAdd(src.val[].counter, 1, Relaxed)
   if dest.val != nil:
     `=destroy`(dest)
   dest.val = src.val
@@ -108,9 +108,9 @@ proc newSharedPtr*[T](t: typedesc[T]): SharedPtr[T] =
   ## Returns a shared pointer. It is not initialized,
   ## so reading from it before writing to it is undefined behaviour!
   when not supportsCopyMem(T):
-    result.val = cast[typeof(result.val)](allocShared0(sizeof(T)))
+    result.val = cast[typeof(result.val)](allocShared0(sizeof(result.val[])))
   else:
-    result.val = cast[typeof(result.val)](allocShared(sizeof(T)))
+    result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
   int(result.val.counter) = 0
 
 proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
