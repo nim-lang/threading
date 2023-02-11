@@ -76,12 +76,8 @@ runnableExamples("--threads:on --gc:orc"):
   # Wait for the second thread to exit before cleaning up the channel.
   worker2.joinThread()
 
-  # Clean up the channel.
-  assert chan.close()
-
   assert messages[^1] == "Another message"
   assert messages.len >= 2
-
 
 when not defined(gcArc) and not defined(gcOrc) and not defined(nimdoc):
   {.error: "This channel implementation requires --gc:arc or --gc:orc".}
@@ -100,8 +96,8 @@ type
     closed: Atomic[bool]
     size: int
     itemsize: int # up to itemsize bytes can be exchanged over this channel
-    head: int     # Items are taken from head and new items are inserted at tail
-    tail: int
+    head: int     # Write/enqueue/send index
+    tail: int     # Read/dequeue/receive index
     buffer: ptr UncheckedArray[byte]
     atomicCounter: Atomic[int]
 
@@ -115,14 +111,14 @@ type
 # ------------------------------------------------------------------------------
 
 proc numItems(chan: ChannelRaw): int {.inline.} =
-  result = chan.tail - chan.head
+  result = chan.head - chan.tail
   if result < 0:
     inc(result, 2 * chan.size)
 
   assert result <= chan.size
 
 template isFull(chan: ChannelRaw): bool =
-  abs(chan.tail - chan.head) == chan.size
+  abs(chan.head - chan.tail) == chan.size
 
 template isEmpty(chan: ChannelRaw): bool =
   chan.head == chan.tail
@@ -131,13 +127,13 @@ template isEmpty(chan: ChannelRaw): bool =
 # ------------------------------------------------------------------------------
 
 template numItemsUnbuf(chan: ChannelRaw): int =
-  chan.head
+  chan.tail
 
 template isFullUnbuf(chan: ChannelRaw): bool =
-  chan.head == 1
+  chan.tail == 1
 
 template isEmptyUnbuf(chan: ChannelRaw): bool =
-  chan.head == 0
+  chan.tail == 0
 
 # ChannelRaw kinds
 # ------------------------------------------------------------------------------
@@ -148,7 +144,8 @@ proc isUnbuffered(chan: ChannelRaw): bool =
 # ChannelRaw status and properties
 # ------------------------------------------------------------------------------
 
-proc isClosed(chan: ChannelRaw): bool {.inline.} = load(chan.closed, moRelaxed)
+when false:
+  proc isClosed(chan: ChannelRaw): bool {.inline.} = load(chan.closed, moRelaxed)
 
 proc peek(chan: ChannelRaw): int {.inline.} =
   (if chan.isUnbuffered: numItemsUnbuf(chan) else: numItems(chan))
@@ -159,8 +156,6 @@ proc peek(chan: ChannelRaw): int {.inline.} =
 
 proc allocChannel(size, n: int): ChannelRaw =
   result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
-  if result.isNil:
-    raise newException(OutOfMemError, "Could not allocate memory")
 
   # To buffer n items, we allocate for n
   result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
@@ -199,24 +194,25 @@ proc sendUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
   when not blocking:
     if chan.isFullUnbuf(): return false
 
-  acquire(chan.hLock)
+  # for a buffer of size=1 only tail index is used
+  acquire(chan.tLock)
 
   # check for when another thread was faster to fill
   when blocking:
     while chan.isFullUnbuf():
-      wait(chan.spaceAvailableCV, chan.hLock)
+      wait(chan.spaceAvailableCV, chan.tLock)
   else:
     if chan.isFullUnbuf():
-      release(chan.hLock)
+      release(chan.tLock)
       return false
 
   assert chan.isEmptyUnbuf()
   assert size <= chan.itemsize
   copyMem(chan.buffer, data, size)
 
-  chan.head = 1
+  chan.tail = 1
 
-  release(chan.hLock)
+  release(chan.tLock)
   when blocking:
     signal(chan.dataAvailableCV)
   result = true
@@ -229,34 +225,34 @@ proc sendMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
     return sendUnbufferedMpmc(chan, data, size, blocking)
 
   when not blocking:
-    if chan.isFullUnbuf(): return false
+    if chan.isFull(): return false
 
-  acquire(chan.tLock)
+  acquire(chan.hLock)
 
   # check for when another thread was faster to fill
   when blocking:
     while chan.isFull():
-      wait(chan.spaceAvailableCV, chan.tLock)
+      wait(chan.spaceAvailableCV, chan.hLock)
   else:
     if chan.isFull():
-      release(chan.tLock)
+      release(chan.hLock)
       return false
 
   assert not chan.isFull()
   assert size <= chan.itemsize
 
-  let writeIdx = if chan.tail < chan.size:
-      chan.tail
+  let writeIdx = if chan.head < chan.size:
+      chan.head
     else:
-      chan.tail - chan.size
+      chan.head - chan.size
 
   copyMem(chan.buffer[writeIdx * chan.itemsize].addr, data, size)
 
-  inc(chan.tail)
-  if chan.tail == 2 * chan.size:
-    chan.tail = 0
+  inc(chan.head)
+  if chan.head == 2 * chan.size:
+    chan.head = 0
 
-  release(chan.tLock)
+  release(chan.hLock)
   when blocking:
     signal(chan.dataAvailableCV)
   result = true
@@ -265,15 +261,16 @@ proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
   when not blocking:
     if chan.isEmptyUnbuf(): return false
 
-  acquire(chan.hLock)
+  # for a buffer of size=1 only tail index is used
+  acquire(chan.tLock)
 
   # check for when another thread was faster to empty
   when blocking:
     while chan.isEmptyUnbuf():
-      wait(chan.dataAvailableCV, chan.hLock)
+      wait(chan.dataAvailableCV, chan.tLock)
   else:
     if chan.isEmptyUnbuf():
-      release(chan.hLock)
+      release(chan.tLock)
       return false
 
   assert chan.isFullUnbuf()
@@ -281,10 +278,10 @@ proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
 
   copyMem(data, chan.buffer, size)
 
-  chan.head = 0
+  chan.tail = 0
   assert chan.isEmptyUnbuf()
 
-  release(chan.hLock)
+  release(chan.tLock)
   when blocking:
     signal(chan.spaceAvailableCV)
   result = true
@@ -300,32 +297,32 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
     if chan.isEmpty():
       return false
 
-  acquire(chan.hLock)
+  acquire(chan.tLock)
 
   # check for when another thread was faster to empty
   when blocking:
     while chan.isEmpty():
-      wait(chan.dataAvailableCV, chan.hLock)
+      wait(chan.dataAvailableCV, chan.tLock)
   else:
     if chan.isEmpty():
-      release(chan.hLock)
+      release(chan.tLock)
       return false
 
   assert not chan.isEmpty()
   assert size <= chan.itemsize
 
-  let readIdx = if chan.head < chan.size:
-      chan.head
+  let readIdx = if chan.tail < chan.size:
+      chan.tail
     else:
-      chan.head - chan.size
+      chan.tail - chan.size
 
   copyMem(data, chan.buffer[readIdx * chan.itemsize].addr, size)
 
-  inc(chan.head)
-  if chan.head == 2 * chan.size:
-    chan.head = 0
+  inc(chan.tail)
+  if chan.tail == 2 * chan.size:
+    chan.tail = 0
 
-  release(chan.hLock)
+  release(chan.tLock)
   when blocking:
     signal(chan.spaceAvailableCV)
   result = true
