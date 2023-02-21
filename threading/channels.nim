@@ -91,7 +91,7 @@ import system/ansi_c
 type
   ChannelRaw = ptr ChannelObj
   ChannelObj = object
-    hLock, tLock: Lock
+    lock: Lock
     spaceAvailableCV, dataAvailableCV: Cond
     closed: Atomic[bool]
     size: int
@@ -160,8 +160,7 @@ proc allocChannel(size, n: int): ChannelRaw =
   # To buffer n items, we allocate for n
   result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
 
-  initLock(result.hLock)
-  initLock(result.tLock)
+  initLock(result.lock)
   initCond(result.spaceAvailableCV)
   initCond(result.dataAvailableCV)
 
@@ -180,8 +179,7 @@ proc freeChannel(chan: ChannelRaw) =
   if not chan.buffer.isNil:
     c_free(chan.buffer)
 
-  deinitLock(chan.hLock)
-  deinitLock(chan.tLock)
+  deinitLock(chan.lock)
   deinitCond(chan.spaceAvailableCV)
   deinitCond(chan.dataAvailableCV)
 
@@ -195,15 +193,15 @@ proc sendUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
     if chan.isFullUnbuf(): return false
 
   # for a buffer of size=1 only tail index is used
-  acquire(chan.tLock)
+  acquire(chan.lock)
 
   # check for when another thread was faster to fill
   when blocking:
     while chan.isFullUnbuf():
-      wait(chan.spaceAvailableCV, chan.tLock)
+      wait(chan.spaceAvailableCV, chan.lock)
   else:
     if chan.isFullUnbuf():
-      release(chan.tLock)
+      release(chan.lock)
       return false
 
   assert chan.isEmptyUnbuf()
@@ -212,7 +210,7 @@ proc sendUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
 
   chan.tail = 1
 
-  release(chan.tLock)
+  release(chan.lock)
   when blocking:
     signal(chan.dataAvailableCV)
   result = true
@@ -227,15 +225,15 @@ proc sendMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
   when not blocking:
     if chan.isFull(): return false
 
-  acquire(chan.hLock)
+  acquire(chan.lock)
 
   # check for when another thread was faster to fill
   when blocking:
     while chan.isFull():
-      wait(chan.spaceAvailableCV, chan.hLock)
+      wait(chan.spaceAvailableCV, chan.lock)
   else:
     if chan.isFull():
-      release(chan.hLock)
+      release(chan.lock)
       return false
 
   assert not chan.isFull()
@@ -252,7 +250,7 @@ proc sendMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
   if chan.head == 2 * chan.size:
     chan.head = 0
 
-  release(chan.hLock)
+  release(chan.lock)
   when blocking:
     signal(chan.dataAvailableCV)
   result = true
@@ -262,15 +260,15 @@ proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
     if chan.isEmptyUnbuf(): return false
 
   # for a buffer of size=1 only tail index is used
-  acquire(chan.tLock)
+  acquire(chan.lock)
 
   # check for when another thread was faster to empty
   when blocking:
     while chan.isEmptyUnbuf():
-      wait(chan.dataAvailableCV, chan.tLock)
+      wait(chan.dataAvailableCV, chan.lock)
   else:
     if chan.isEmptyUnbuf():
-      release(chan.tLock)
+      release(chan.lock)
       return false
 
   assert chan.isFullUnbuf()
@@ -281,7 +279,7 @@ proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
   chan.tail = 0
   assert chan.isEmptyUnbuf()
 
-  release(chan.tLock)
+  release(chan.lock)
   when blocking:
     signal(chan.spaceAvailableCV)
   result = true
@@ -294,18 +292,17 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
     return recvUnbufferedMpmc(chan, data, size, blocking)
 
   when not blocking:
-    if chan.isEmpty():
-      return false
+    if chan.isEmpty(): return false
 
-  acquire(chan.tLock)
+  acquire(chan.lock)
 
   # check for when another thread was faster to empty
   when blocking:
     while chan.isEmpty():
-      wait(chan.dataAvailableCV, chan.tLock)
+      wait(chan.dataAvailableCV, chan.lock)
   else:
     if chan.isEmpty():
-      release(chan.tLock)
+      release(chan.lock)
       return false
 
   assert not chan.isEmpty()
@@ -322,7 +319,7 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
   if chan.tail == 2 * chan.size:
     chan.tail = 0
 
-  release(chan.tLock)
+  release(chan.lock)
   when blocking:
     signal(chan.spaceAvailableCV)
   result = true
