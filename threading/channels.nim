@@ -280,8 +280,7 @@ proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
   assert chan.isEmptyUnbuf()
 
   release(chan.lock)
-  when blocking:
-    signal(chan.spaceAvailableCV)
+  signal(chan.spaceAvailableCV)
   result = true
 
 proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool): bool =
@@ -320,8 +319,7 @@ proc recvMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
     chan.tail = 0
 
   release(chan.lock)
-  when blocking:
-    signal(chan.spaceAvailableCV)
+  signal(chan.spaceAvailableCV)
   result = true
 
 
@@ -340,7 +338,7 @@ proc `=destroy`*[T](c: var Chan[T]) =
     else:
       atomicDec(c.d.atomicCounter)
 
-proc `=`*[T](dest: var Chan[T], src: Chan[T]) =
+proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
     atomicInc(src.d.atomicCounter)
