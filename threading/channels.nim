@@ -211,8 +211,7 @@ proc sendUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: st
   chan.tail = 1
 
   release(chan.lock)
-  when blocking:
-    signal(chan.dataAvailableCV)
+  signal(chan.dataAvailableCV)
   result = true
 
 proc sendMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool): bool =
@@ -251,8 +250,7 @@ proc sendMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool)
     chan.head = 0
 
   release(chan.lock)
-  when blocking:
-    signal(chan.dataAvailableCV)
+  signal(chan.dataAvailableCV)
   result = true
 
 proc recvUnbufferedMpmc(chan: ChannelRaw, data: pointer, size: int, blocking: static bool): bool =
