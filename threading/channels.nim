@@ -386,6 +386,10 @@ proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
   ## Receives item from the channel (blocking).
   discard channelReceive(c, dst.addr, sizeof(dst), true)
 
+proc recv*[T](c: Chan[T]): T {.inline.} =
+  ## Receives item from the channel (blocking).
+  discard channelReceive(c, result.addr, sizeof(result), true)
+
 proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
   var dst: T
   discard channelReceive(c, dst.addr, sizeof(dst), true)
