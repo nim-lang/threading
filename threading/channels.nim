@@ -82,6 +82,10 @@ runnableExamples("--threads:on --gc:orc"):
 when not defined(gcArc) and not defined(gcOrc) and not defined(nimdoc):
   {.error: "This channel implementation requires --gc:arc or --gc:orc".}
 
+when defined(nimPreviewSlimSystem):
+  import std/typedthreads
+  import std/assertions
+
 import std/[locks, atomics, isolation]
 import system/ansi_c
 
