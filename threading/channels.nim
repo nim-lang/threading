@@ -355,7 +355,7 @@ proc channelReceive[T](chan: Chan[T], data: ptr T, size: int, blocking: static b
   ## (Remove the first item)
   recvMpmc(chan.d, data, size, blocking)
 
-proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
+proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Sends item to the channel (non blocking).
   var data = src.extract
   result = channelSend(c, data, sizeof(data), false)
