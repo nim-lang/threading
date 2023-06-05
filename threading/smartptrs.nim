@@ -29,6 +29,10 @@ proc `=destroy`*[T](p: var UniquePtr[T]) =
     `=destroy`(p.val[])
     deallocShared(p.val)
 
+proc `=dup`*[T](src: UniquePtr[T]): UniquePtr[T] {.error.}
+  ## The dup operation is disallowed for `UniquePtr`, it
+  ## can only be moved.
+
 proc `=copy`*[T](dest: var UniquePtr[T], src: UniquePtr[T]) {.error.}
   ## The copy operation is disallowed for `UniquePtr`, it
   ## can only be moved.
@@ -81,17 +85,21 @@ type
 
 proc `=destroy`*[T](p: var SharedPtr[T]) =
   if p.val != nil:
-    if p.val[].counter.load(Acquire) == 0:
-      `=destroy`(p.val[])
+    if p.val.counter.load(Acquire) == 0:
+      `=destroy`(p.val.value)
       deallocShared(p.val)
     else:
-      discard fetchSub(p.val[].counter, 1, Release)
+      discard fetchSub(p.val.counter, 1, Release)
+
+proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
+  if src.val != nil:
+    discard fetchAdd(src.val.counter, 1, Relaxed)
+  result.val = src.val
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
   if src.val != nil:
-    discard fetchAdd(src.val[].counter, 1, Relaxed)
-  if dest.val != nil:
-    `=destroy`(dest)
+    discard fetchAdd(src.val.counter, 1, Relaxed)
+  `=destroy`(dest)
   dest.val = src.val
 
 proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
