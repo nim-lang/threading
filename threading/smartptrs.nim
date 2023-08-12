@@ -160,7 +160,7 @@ proc `[]`*[T](p: ConstPtr[T]): lent T {.inline.} =
   checkNotNil(p)
   SharedPtr[T](p).val.value
 
-proc `[]=`*[T](p: ConstPtr[T], v: T) = {.error: "`ConstPtr` cannot be assigned.".}
+proc `[]=`*[T](p: ConstPtr[T], v: T) {.error: "`ConstPtr` cannot be assigned.".}
 
 proc `$`*[T](p: ConstPtr[T]): string {.inline.} =
   $SharedPtr[T](p)
