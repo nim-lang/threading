@@ -11,8 +11,8 @@
 import std / [locks]
 
 type
-  WaitGroup* = object ## \
-    ## A WaitGroup is an synchronization object that can be used to `wait` until
+  WaitGroup* = object
+    ## A WaitGroup is a synchronization object that can be used to `wait` until
     ## all workers have completed.
     c: Cond
     L: Lock
@@ -35,6 +35,7 @@ proc enter*(b: var WaitGroup; delta = 1) {.inline.} =
   ## Tells the WaitGroup that one or more workers (the `delta` parameter says
   ## how many) "entered" which means to increase the counter that counts how
   ## many workers to wait for.
+  doAssert delta > 0
   acquire(b.L)
   inc b.runningTasks, delta
   release(b.L)
@@ -42,8 +43,10 @@ proc enter*(b: var WaitGroup; delta = 1) {.inline.} =
 proc leave*(b: var WaitGroup) {.inline.} =
   ## Tells the WaitGroup that one worker has finished its task.
   acquire(b.L)
-  dec b.runningTasks
-  signal(b.c)
+  if b.runningTasks > 0:
+    dec b.runningTasks
+    if b.runningTasks == 0:
+      broadcast(b.c)
   release(b.L)
 
 proc wait*(b: var WaitGroup) =
