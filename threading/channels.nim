@@ -239,13 +239,22 @@ type
   Chan*[T] = object ## Typed channel
     d: ChannelRaw
 
-proc `=destroy`*[T](c: var Chan[T]) =
-  if c.d != nil:
-    if load(c.d.atomicCounter, moAcquire) == 0:
-      if c.d.buffer != nil:
-        freeChannel(c.d)
-    else:
-      atomicDec(c.d.atomicCounter)
+when defined(nimAllowNonVarDestructor):
+  proc `=destroy`*[T](c: Chan[T]) =
+    if c.d != nil:
+      if load(c.d.atomicCounter, moAcquire) == 0:
+        if c.d.buffer != nil:
+          freeChannel(c.d)
+      else:
+        atomicDec(c.d.atomicCounter)
+else:
+  proc `=destroy`*[T](c: var Chan[T]) =
+    if c.d != nil:
+      if load(c.d.atomicCounter, moAcquire) == 0:
+        if c.d.buffer != nil:
+          freeChannel(c.d)
+      else:
+        atomicDec(c.d.atomicCounter)
 
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.

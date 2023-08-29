@@ -24,10 +24,16 @@ type
     ## Non copyable pointer to a value of type `T` with exclusive ownership.
     val: ptr T
 
-proc `=destroy`*[T](p: var UniquePtr[T]) =
-  if p.val != nil:
-    `=destroy`(p.val[])
-    deallocShared(p.val)
+when defined(nimAllowNonVarDestructor):
+  proc `=destroy`*[T](p: UniquePtr[T]) =
+    if p.val != nil:
+      `=destroy`(p.val[])
+      deallocShared(p.val)
+else:
+  proc `=destroy`*[T](p: var UniquePtr[T]) =
+    if p.val != nil:
+      `=destroy`(p.val[])
+      deallocShared(p.val)
 
 proc `=dup`*[T](src: UniquePtr[T]): UniquePtr[T] {.error.}
   ## The dup operation is disallowed for `UniquePtr`, it
@@ -83,13 +89,22 @@ type
     ## Shared ownership reference counting pointer.
     val: ptr tuple[value: T, counter: Atomic[int]]
 
-proc `=destroy`*[T](p: var SharedPtr[T]) =
-  if p.val != nil:
-    if p.val.counter.load(Acquire) == 0:
-      `=destroy`(p.val.value)
-      deallocShared(p.val)
-    else:
-      discard fetchSub(p.val.counter, 1, Release)
+when defined(nimAllowNonVarDestructor):
+  proc `=destroy`*[T](p: SharedPtr[T]) =
+    if p.val != nil:
+      if p.val.counter.load(Acquire) == 0:
+        `=destroy`(p.val.value)
+        deallocShared(p.val)
+      else:
+        discard fetchSub(p.val.counter, 1, Release)
+else:
+  proc `=destroy`*[T](p: var SharedPtr[T]) =
+    if p.val != nil:
+      if p.val.counter.load(Acquire) == 0:
+        `=destroy`(p.val.value)
+        deallocShared(p.val)
+      else:
+        discard fetchSub(p.val.counter, 1, Release)
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
   if src.val != nil:

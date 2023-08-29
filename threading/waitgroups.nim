@@ -18,10 +18,15 @@ type
     L: Lock
     runningTasks: int
 
-proc `=destroy`(b: WaitGroup) {.inline.} =
-  let x = addr(b)
-  deinitCond(x.c)
-  deinitLock(x.L)
+when defined(nimAllowNonVarDestructor):
+  proc `=destroy`(b: WaitGroup) {.inline.} =
+    let x = addr(b)
+    deinitCond(x.c)
+    deinitLock(x.L)
+else:
+  proc `=destroy`(b: var WaitGroup) {.inline.} =
+    deinitCond(b.c)
+    deinitLock(b.L)
 
 proc `=copy`(dest: var WaitGroup; src: WaitGroup) {.error.}
 proc `=sink`(dest: var WaitGroup; src: WaitGroup) {.error.}
