@@ -52,11 +52,10 @@ proc createWaitGroup*(): WaitGroup =
   initCond(result.c)
   initLock(result.L)
 
-proc enter*(b: var WaitGroup; delta = 1) {.inline.} =
+proc enter*(b: var WaitGroup; delta: Natural = 1) {.inline.} =
   ## Tells the `WaitGroup` that one or more workers (the `delta` parameter says
   ## how many) "entered", which means to increase the counter that counts how
   ## many workers to wait for.
-  doAssert delta > 0
   acquire(b.L)
   inc b.runningTasks, delta
   release(b.L)
