@@ -2,9 +2,9 @@
 
 version       = "0.1.0"
 author        = "Araq"
-description   = "New atomics, thread primitives, channels and atomic refcounting for --gc:arc/orc."
+description   = "New threading primitives for --mm:arc/orc: atomics, channels, smart pointers and wait groups."
 license       = "MIT"
 
 # Dependencies
 
-requires "nim >= 1.4.6"
+requires "nim >= 1.6.0"
