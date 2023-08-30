@@ -37,7 +37,7 @@
       </ul>
     </div>
     <div id="searchInputDiv">
-      Search: <input type="search" id="searchInput" onkeyup="search()"/>
+      Search: <input type="search" id="searchInput" oninput="search()"/>
     </div>
     <div>
       Group by:
@@ -65,7 +65,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">=destroy
-  <li><a class="reference" href="#%3Ddestroy%2CChan%5BT%5D" title="`=destroy`[T](c: var Chan[T])">`=destroy`[T](c: var Chan[T])</a></li>
+  <li><a class="reference" href="#%3Ddestroy%2CChan%5BT%5D" title="`=destroy`[T](c: Chan[T])">`=destroy`[T](c: Chan[T])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newChan
@@ -219,8 +219,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Shares <tt class="docutils literal"><span class="pre"><span class="Identifier">Channel</span></span></tt> by reference counting.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L250" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L250" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L259" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L259" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -228,12 +228,12 @@ This module is experimental and its interface may change.</div>
 </div>
 <div id="=destroy-procs-all">
   <div id="=destroy,Chan[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CChan%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CChan%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L242" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L242" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L243" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L243" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -245,8 +245,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     An initialization procedure, necessary for acquiring resources and initializing internal state of the channel.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L303" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L303" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L312" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L312" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -258,8 +258,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Returns an estimation of current number of items held by the channel.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L299" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L299" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L308" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L308" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -271,8 +271,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Receives item from the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L290" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L290" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L299" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L299" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -281,8 +281,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Receives item from the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L286" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L286" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L295" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L295" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -294,8 +294,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L294" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L294" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L303" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L303" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -307,8 +307,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Sends item to the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L274" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L274" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L283" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L283" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -320,8 +320,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Receives item from the channel (non-blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L270" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L270" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L279" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L279" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -333,8 +333,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Sends item to the channel (non-blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L259" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L259" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L268" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L268" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -352,8 +352,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Helper template for <tt class="docutils literal"><span class="pre"><span class="Identifier">send</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L282" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L282" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L291" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L291" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -365,8 +365,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Helper template for <tt class="docutils literal"><span class="pre"><span class="Identifier">trySend</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L266" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L266" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L275" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L275" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -382,7 +382,7 @@ This module is experimental and its interface may change.</div>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-08-20 09:21:49 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-08-30 04:31:07 UTC</small>
       </div>
     </div>
   </div>

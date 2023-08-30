@@ -1,6 +1,6 @@
 nimTitle	waitgroups	waitgroups.html	module threading/waitgroups		0
 nim	WaitGroup	waitgroups.html#WaitGroup	object WaitGroup		14
-nim	createWaitGroup	waitgroups.html#createWaitGroup	proc createWaitGroup(): WaitGroup		29
-nim	enter	waitgroups.html#enter,WaitGroup,int	proc enter(b: var WaitGroup; delta = 1)		34
-nim	leave	waitgroups.html#leave,WaitGroup	proc leave(b: var WaitGroup)		42
-nim	wait	waitgroups.html#wait,WaitGroup	proc wait(b: var WaitGroup)		49
+nim	createWaitGroup	waitgroups.html#createWaitGroup	proc createWaitGroup(): WaitGroup		34
+nim	enter	waitgroups.html#enter,WaitGroup,int	proc enter(b: var WaitGroup; delta = 1)		39
+nim	leave	waitgroups.html#leave,WaitGroup	proc leave(b: var WaitGroup)		47
+nim	wait	waitgroups.html#wait,WaitGroup	proc wait(b: var WaitGroup)		54
