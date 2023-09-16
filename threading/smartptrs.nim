@@ -87,42 +87,40 @@ proc `$`*[T](p: UniquePtr[T]): string {.inline.} =
 type
   SharedPtr*[T] = object
     ## Shared ownership reference counting pointer.
-    val: ptr tuple[value: T, counter: Atomic[int]]
+    container: ptr tuple[value: T, counter: Atomic[int]]
+
+proc decr[T](p: SharedPtr[T]) {.inline.} =
+  if p.container != nil:
+    # this `fetchSub` returns current val then subs
+    # so count == 1 means we're the last
+    if p.container.counter.fetchSub(1, Release) == 1:
+      `=destroy`(p.container.value)
+      deallocShared(p.container)
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](p: SharedPtr[T]) =
-    if p.val != nil:
-      if p.val.counter.load(Acquire) == 0:
-        `=destroy`(p.val.value)
-        deallocShared(p.val)
-      else:
-        discard fetchSub(p.val.counter, 1, Release)
+    p.decr()
 else:
   proc `=destroy`*[T](p: var SharedPtr[T]) =
-    if p.val != nil:
-      if p.val.counter.load(Acquire) == 0:
-        `=destroy`(p.val.value)
-        deallocShared(p.val)
-      else:
-        discard fetchSub(p.val.counter, 1, Release)
+    p.decr()
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
-  if src.val != nil:
-    discard fetchAdd(src.val.counter, 1, Relaxed)
-  result.val = src.val
+  if src.container != nil:
+    discard fetchAdd(src.container.counter, 1, Relaxed)
+  result.container = src.container
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
-  if src.val != nil:
-    discard fetchAdd(src.val.counter, 1, Relaxed)
+  if src.container != nil:
+    discard fetchAdd(src.container.counter, 1, Relaxed)
   `=destroy`(dest)
-  dest.val = src.val
+  dest.container = src.container
 
 proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
   ## Returns a shared pointer which shares
   ## ownership of the object by reference counting.
-  result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  int(result.val.counter) = 0
-  result.val.value = extract val
+  result.container = cast[typeof(result.container)](allocShared(sizeof(result.container[])))
+  int(result.container.counter) = 1
+  result.container.value = extract val
 
 template newSharedPtr*[T](val: T): SharedPtr[T] =
   newSharedPtr(isolate(val))
@@ -131,28 +129,28 @@ proc newSharedPtr*[T](t: typedesc[T]): SharedPtr[T] =
   ## Returns a shared pointer. It is not initialized,
   ## so reading from it before writing to it is undefined behaviour!
   when not supportsCopyMem(T):
-    result.val = cast[typeof(result.val)](allocShared0(sizeof(result.val[])))
+    result.container = cast[typeof(result.container)](allocShared0(sizeof(result.container[])))
   else:
-    result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  int(result.val.counter) = 0
+    result.container = cast[typeof(result.container)](allocShared(sizeof(result.container[])))
+  int(result.container.counter) = 1
 
 proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
-  p.val == nil
+  p.container == nil
 
 proc `[]`*[T](p: SharedPtr[T]): var T {.inline.} =
   checkNotNil(p)
-  p.val.value
+  p.container.value
 
 proc `[]=`*[T](p: SharedPtr[T], val: sink Isolated[T]) {.inline.} =
   checkNotNil(p)
-  p.val.value = extract val
+  p.container.value = extract val
 
 template `[]=`*[T](p: SharedPtr[T]; val: T) =
   `[]=`(p, isolate(val))
 
 proc `$`*[T](p: SharedPtr[T]): string {.inline.} =
-  if p.val == nil: "nil"
-  else: "(val: " & $p.val.value & ")"
+  if p.container == nil: "nil"
+  else: "(val: " & $p.container.value & ")"
 
 #------------------------------------------------------------------------------
 
@@ -168,12 +166,12 @@ template newConstPtr*[T](val: T): ConstPtr[T] =
   newConstPtr(isolate(val))
 
 proc isNil*[T](p: ConstPtr[T]): bool {.inline.} =
-  SharedPtr[T](p).val == nil
+  SharedPtr[T](p).container == nil
 
 proc `[]`*[T](p: ConstPtr[T]): lent T {.inline.} =
   ## Returns an immutable view of the internal value of `p`.
   checkNotNil(p)
-  SharedPtr[T](p).val.value
+  SharedPtr[T](p).container.value
 
 proc `[]=`*[T](p: ConstPtr[T], v: T) {.error: "`ConstPtr` cannot be assigned.".}
 
