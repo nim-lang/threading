@@ -10,8 +10,12 @@ var
 type
   TestObj = object
 
-proc `=destroy`(obj: TestObj) =
-  discard freeCounts.fetchAdd(1, Release)
+when defined(nimAllowNonVarDestructor):
+  proc `=destroy`(obj: TestObj) =
+    discard freeCounts.fetchAdd(1, Release)
+else:
+  proc `=destroy`(obj: var TestObj) =
+    discard freeCounts.fetchAdd(1, Release)
 
 var
   thr: array[0..1, Thread[void]]
