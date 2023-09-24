@@ -1,16 +1,16 @@
 import threading/rwlock, std/os
 
 const
-  numThreads = 10
-  numIters = 100
+  NumThreads = 10
+  NumIters = 100
 
 var
-  rw: RwLock
+  rw = createRwLock()
   data = 0
-  threads: array[numThreads, Thread[void]]
+  threads: array[NumThreads, Thread[void]]
 
 proc routine =
-  for i in 0..<numIters:
+  for i in 0..<NumIters:
     writeWith rw:
       let tmp = data
       data = -1
@@ -18,12 +18,11 @@ proc routine =
       data = tmp + 1
 
 proc frob =
-  init rw
-  for i in 0..<numThreads:
+  for i in 0..<NumThreads:
     createThread(threads[i], routine)
-  for i in 0..<numIters:
+  for i in 0..<NumIters:
     readWith(rw, assert data >= 0)
   joinThreads(threads)
-  assert data == numIters * numThreads
+  assert data == NumIters * NumThreads
 
 frob()

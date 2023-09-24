@@ -1,8 +1,7 @@
 import threading/once
 
-var o: Once
+var o = createOnce()
 proc smokeOnce() =
-  init o
   var a = 0
   o.once(a += 1)
   assert a == 1

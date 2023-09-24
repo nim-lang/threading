@@ -1,18 +1,18 @@
 import threading/once
 
 const
-  numThreads = 10
-  maxIters = 1000
+  NumThreads = 10
+  NumIters = 1000
 
 type
   Singleton = object
     data: int
 
 var
-  threads: array[numThreads, Thread[void]]
+  threads: array[NumThreads, Thread[void]]
   counter = 1
   instance: ptr Singleton
-  o: Once
+  o = createOnce()
 
 proc getInstance(): ptr Singleton =
   once(o):
@@ -22,12 +22,11 @@ proc getInstance(): ptr Singleton =
   result = instance
 
 proc routine {.thread.} =
-  for i in 1 .. maxIters:
+  for i in 1..NumIters:
     assert getInstance().data == 1
 
 proc main =
-  init o
-  for i in 0 ..< numThreads:
+  for i in 0..<NumThreads:
     createThread(threads[i], routine)
   joinThreads(threads)
   deallocShared(instance)

@@ -1,27 +1,26 @@
 import threading/barrier, std/[os, strformat]
 
 const
-  numThreads = 10
-  numIters = 100
+  NumThreads = 10
+  NumIters = 100
 
 var
-  barrier: Barrier
-  phases: array[numThreads, int]
-  threads: array[numThreads, Thread[int]]
+  b = createBarrier(NumThreads)
+  phases: array[NumThreads, int]
+  threads: array[NumThreads, Thread[int]]
 
 proc routine(id: int) =
-  for i in 0 ..< numIters:
+  for i in 0..<NumIters:
     phases[id] = i
-    if (id + i) mod numThreads == 0:
+    if (id + i) mod NumThreads == 0:
       sleep 1
-    wait barrier
-    for j in 0 ..< numThreads:
+    wait b
+    for j in 0..<NumThreads:
       assert phases[j] == i, &"{id} in phase {i} sees {j} in phase {phases[j]}"
-    wait barrier
+    wait b
 
 proc testBarrier =
-  init barrier, numThreads
-  for i in 0 ..< numThreads:
+  for i in 0..<NumThreads:
     createThread(threads[i], routine, i)
   joinThreads(threads)
 

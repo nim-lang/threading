@@ -1,18 +1,18 @@
 import threading/rwlock, std/[random, os]
 
 const
-  numThreads = 10
-  numIters = 100
+  NumThreads = 10
+  NumIters = 100
 
 var
-  rw: RwLock
+  rw = createRwLock()
   data = 0
-  threads: array[numThreads, Thread[void]]
+  threads: array[NumThreads, Thread[void]]
 
 proc routine =
   var r = initRand(getThreadId())
-  for i in 0..<numIters:
-    if r.rand(1.0) <= 1 / numThreads:
+  for i in 0..<NumIters:
+    if r.rand(1.0) <= 1 / NumThreads:
       writeWith rw:
         let tmp = data
         data = -1
@@ -23,8 +23,7 @@ proc routine =
         assert data >= 0
 
 proc frob =
-  init rw
-  for i in 0..<numThreads:
+  for i in 0..<NumThreads:
     createThread(threads[i], routine)
   joinThreads(threads)
 

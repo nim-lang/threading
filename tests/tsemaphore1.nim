@@ -1,7 +1,7 @@
 import threading/semaphore
 
 var
-  semS, semT: Semaphore
+  semS, semT = createSemaphore()
   aArrived, cArrived = false
   thread: Thread[void]
 
@@ -14,8 +14,6 @@ proc routine =
   assert aArrived, "Constraint: Section A precedes D"
 
 proc testRendezvous =
-  init semS
-  init semT
   createThread(thread, routine)
   # Section A
   aArrived = true
