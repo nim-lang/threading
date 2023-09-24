@@ -38,21 +38,19 @@ type
   RwLock* = object
     ## Readers-writer lock. Multiple readers can acquire the lock at the same
     ## time, but only one writer can acquire the lock at a time.
-    readPhase: Cond
-    writePhase: Cond
+    c: Cond
     L: Lock
-    counter: int # can be in three states: free = 0, reading > 0, writing = -1
+    activeReaders, waitingWriters: int
+    activeWriter: bool
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*(rw: RwLock) {.inline.} =
     let x = addr(rw)
-    deinitCond(x.readPhase)
-    deinitCond(x.writePhase)
+    deinitCond(x.c)
     deinitLock(x.L)
 else:
   proc `=destroy`*(rw: var RwLock) {.inline.} =
-    deinitCond(rw.readPhase)
-    deinitCond(rw.writePhase)
+    deinitCond(rw.c)
     deinitLock(rw.L)
 
 proc `=sink`*(dest: var RwLock; source: RwLock) {.error.}
@@ -60,40 +58,39 @@ proc `=copy`*(dest: var RwLock; source: RwLock) {.error.}
 
 proc createRwLock*(): RwLock =
   result = default(RwLock)
-  initCond(result.readPhase)
-  initCond(result.writePhase)
+  initCond(result.c)
   initLock(result.L)
 
 proc beginRead*(rw: var RwLock) =
   ## Acquire a read lock.
   acquire(rw.L)
-  while rw.counter == -1:
-    wait(rw.readPhase, rw.L)
-  inc rw.counter
+  while rw.waitingWriters > 0 or rw.activeWriter:
+    wait(rw.c, rw.L)
+  inc rw.activeReaders
   release(rw.L)
 
 proc beginWrite*(rw: var RwLock) =
   ## Acquire a write lock.
   acquire(rw.L)
-  while rw.counter != 0:
-    wait(rw.writePhase, rw.L)
-  rw.counter = -1
+  inc rw.waitingWriters
+  while rw.activeReaders > 0 or rw.activeWriter:
+    wait(rw.c, rw.L)
+  dec rw.waitingWriters
+  rw.activeWriter = true
   release(rw.L)
 
 proc endRead*(rw: var RwLock) {.inline.} =
   ## Release a read lock.
   acquire(rw.L)
-  dec rw.counter
-  if rw.counter == 0:
-    rw.writePhase.signal()
+  dec rw.activeReaders
+  rw.c.broadcast()
   release(rw.L)
 
 proc endWrite*(rw: var RwLock) {.inline.} =
   ## Release a write lock.
   acquire(rw.L)
-  rw.counter = 0
-  rw.readPhase.broadcast()
-  rw.writePhase.signal()
+  rw.activeWriter = false
+  rw.c.broadcast()
   release(rw.L)
 
 template readWith*(a: RwLock, body: untyped) =
