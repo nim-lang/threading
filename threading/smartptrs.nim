@@ -87,15 +87,15 @@ proc `$`*[T](p: UniquePtr[T]): string {.inline.} =
 type
   SharedPtr*[T] = object
     ## Shared ownership reference counting pointer.
-    container: ptr tuple[value: T, counter: Atomic[int]]
+    val: ptr tuple[value: T, counter: Atomic[int]]
 
 proc decr[T](p: SharedPtr[T]) {.inline.} =
-  if p.container != nil:
+  if p.val != nil:
     # this `fetchSub` returns current val then subs
     # so count == 1 means we're the last
-    if p.container.counter.fetchSub(1, Release) == 1:
-      `=destroy`(p.container.value)
-      deallocShared(p.container)
+    if p.val.counter.fetchSub(1, Release) == 1:
+      `=destroy`(p.val.value)
+      deallocShared(p.val)
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](p: SharedPtr[T]) =
@@ -105,22 +105,22 @@ else:
     p.decr()
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
-  if src.container != nil:
-    discard fetchAdd(src.container.counter, 1, Relaxed)
-  result.container = src.container
+  if src.val != nil:
+    discard fetchAdd(src.val.counter, 1, Relaxed)
+  result.val = src.val
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
-  if src.container != nil:
-    discard fetchAdd(src.container.counter, 1, Relaxed)
+  if src.val != nil:
+    discard fetchAdd(src.val.counter, 1, Relaxed)
   `=destroy`(dest)
-  dest.container = src.container
+  dest.val = src.val
 
 proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
   ## Returns a shared pointer which shares
   ## ownership of the object by reference counting.
-  result.container = cast[typeof(result.container)](allocShared(sizeof(result.container[])))
-  int(result.container.counter) = 1
-  result.container.value = extract val
+  result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
+  int(result.val.counter) = 1
+  result.val.value = extract val
 
 template newSharedPtr*[T](val: T): SharedPtr[T] =
   newSharedPtr(isolate(val))
@@ -129,28 +129,28 @@ proc newSharedPtr*[T](t: typedesc[T]): SharedPtr[T] =
   ## Returns a shared pointer. It is not initialized,
   ## so reading from it before writing to it is undefined behaviour!
   when not supportsCopyMem(T):
-    result.container = cast[typeof(result.container)](allocShared0(sizeof(result.container[])))
+    result.val = cast[typeof(result.val)](allocShared0(sizeof(result.val[])))
   else:
-    result.container = cast[typeof(result.container)](allocShared(sizeof(result.container[])))
-  int(result.container.counter) = 1
+    result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
+  int(result.val.counter) = 1
 
 proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
-  p.container == nil
+  p.val == nil
 
 proc `[]`*[T](p: SharedPtr[T]): var T {.inline.} =
   checkNotNil(p)
-  p.container.value
+  p.val.value
 
 proc `[]=`*[T](p: SharedPtr[T], val: sink Isolated[T]) {.inline.} =
   checkNotNil(p)
-  p.container.value = extract val
+  p.val.value = extract val
 
 template `[]=`*[T](p: SharedPtr[T]; val: T) =
   `[]=`(p, isolate(val))
 
 proc `$`*[T](p: SharedPtr[T]): string {.inline.} =
-  if p.container == nil: "nil"
-  else: "(val: " & $p.container.value & ")"
+  if p.val == nil: "nil"
+  else: "(val: " & $p.val.value & ")"
 
 #------------------------------------------------------------------------------
 
@@ -166,12 +166,12 @@ template newConstPtr*[T](val: T): ConstPtr[T] =
   newConstPtr(isolate(val))
 
 proc isNil*[T](p: ConstPtr[T]): bool {.inline.} =
-  SharedPtr[T](p).container == nil
+  SharedPtr[T](p).val == nil
 
 proc `[]`*[T](p: ConstPtr[T]): lent T {.inline.} =
   ## Returns an immutable view of the internal value of `p`.
   checkNotNil(p)
-  SharedPtr[T](p).container.value
+  SharedPtr[T](p).val.value
 
 proc `[]=`*[T](p: ConstPtr[T], v: T) {.error: "`ConstPtr` cannot be assigned.".}
 
