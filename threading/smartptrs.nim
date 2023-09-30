@@ -92,7 +92,7 @@ type
 proc decr[T](p: SharedPtr[T]) {.inline.} =
   if p.val != nil:
     # this `fetchSub` returns current val then subs
-    # so count == 1 means we're the last
+    # so count == 0 means we're the last
     if p.val.counter.fetchSub(1, Release) == 0:
       `=destroy`(p.val.value)
       deallocShared(p.val)
