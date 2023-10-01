@@ -89,22 +89,20 @@ type
     ## Shared ownership reference counting pointer.
     val: ptr tuple[value: T, counter: Atomic[int]]
 
+proc decr[T](p: SharedPtr[T]) {.inline.} =
+  if p.val != nil:
+    # this `fetchSub` returns current val then subs
+    # so count == 0 means we're the last
+    if p.val.counter.fetchSub(1, Release) == 0:
+      `=destroy`(p.val.value)
+      deallocShared(p.val)
+
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](p: SharedPtr[T]) =
-    if p.val != nil:
-      if p.val.counter.load(Acquire) == 0:
-        `=destroy`(p.val.value)
-        deallocShared(p.val)
-      else:
-        discard fetchSub(p.val.counter, 1, Release)
+    p.decr()
 else:
   proc `=destroy`*[T](p: var SharedPtr[T]) =
-    if p.val != nil:
-      if p.val.counter.load(Acquire) == 0:
-        `=destroy`(p.val.value)
-        deallocShared(p.val)
-      else:
-        discard fetchSub(p.val.counter, 1, Release)
+    p.decr()
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
   if src.val != nil:
