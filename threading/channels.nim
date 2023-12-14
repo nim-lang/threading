@@ -31,7 +31,7 @@
 ## remove them.
 ## 
 ## See also:
-## * [std/isolate](https://nim-lang.org/docs/isolation.html)
+## * [std/isolation](https://nim-lang.org/docs/isolation.html)
 ##
 ## The following is a simple example of two different ways to use channels:
 ## blocking and non-blocking.
