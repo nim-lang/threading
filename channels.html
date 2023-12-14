@@ -129,8 +129,11 @@
     
     <p class="module-desc">This module only works with <tt class="docutils literal"><span class="pre"><span class="Operator">--</span><span class="Identifier">gc</span><span class="Punctuation">:</span><span class="Identifier">arc</span></span></tt> or <tt class="docutils literal"><span class="pre"><span class="Operator">--</span><span class="Identifier">gc</span><span class="Punctuation">:</span><span class="Identifier">orc</span></span></tt>.<div class="admonition admonition-warning"><span class="admonition-warning-text"><b>Warning:</b></span>
 This module is experimental and its interface may change.</div>
-<p>This module implements multi-producer multi-consumer channels - a concurrency primitive with a high-level interface intended for communication and synchronization between threads. It allows sending and receiving typed data, enabling safe and efficient concurrency.</p>
-<p>The <tt class="docutils literal"><span class="pre"><span class="Identifier">Chan</span></span></tt> type represents a generic channel object that internally manages the underlying resources and synchronization. It has to be initialized using the <tt class="docutils literal"><span class="pre"><span class="Identifier">newChan</span></span></tt> proc. Sending and receiving operations are provided by the blocking <tt class="docutils literal"><span class="pre"><span class="Identifier">send</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">recv</span></span></tt> procs, and non-blocking <tt class="docutils literal"><span class="pre"><span class="Identifier">trySend</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">tryRecv</span></span></tt> procs.</p>
+<p>This module implements multi-producer multi-consumer channels - a concurrency primitive with a high-level interface intended for communication and synchronization between threads. It allows sending and receiving typed, isolated data, enabling safe and efficient concurrency.</p>
+<p>The <tt class="docutils literal"><span class="pre"><span class="Identifier">Chan</span></span></tt> type represents a generic fixed-size channel object that internally manages the underlying resources and synchronization. It has to be initialized using the <tt class="docutils literal"><span class="pre"><span class="Identifier">newChan</span></span></tt> proc. Sending and receiving operations are provided by the blocking <tt class="docutils literal"><span class="pre"><span class="Identifier">send</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">recv</span></span></tt> procs, and non-blocking <tt class="docutils literal"><span class="pre"><span class="Identifier">trySend</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">tryRecv</span></span></tt> procs. Send operations add messages to the channel, receiving operations remove them.</p>
+<p>See also:</p>
+<ul class="simple"><li><a class="reference external" href="https://nim-lang.org/docs/isolation.html">std/isolation</a></li>
+</ul>
 <p>The following is a simple example of two different ways to use channels: blocking and non-blocking.</p>
 
 <p><strong class="examples_text">Example: cmd: --threads:on --gc:orc</strong></p>
@@ -202,8 +205,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Typed channel
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L239" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L239" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L243" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L243" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -219,8 +222,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Shares <tt class="docutils literal"><span class="pre"><span class="Identifier">Channel</span></span></tt> by reference counting.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L259" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L259" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L263" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L263" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -232,8 +235,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L243" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L243" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L247" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L247" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -244,9 +247,11 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#newChan%2CPositive"><span class="Identifier">newChan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">elements</span><span class="Other">:</span> <span class="Identifier">Positive</span> <span class="Other">=</span> <span class="DecNumber">30</span><span class="Other">)</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
-    An initialization procedure, necessary for acquiring resources and initializing internal state of the channel.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L312" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L312" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>An initialization procedure, necessary for acquiring resources and initializing internal state of the channel.</p>
+<p><tt class="docutils literal"><span class="pre"><span class="Identifier">elements</span></span></tt> is the capacity of the channel and thus how many items it can hold before it refuses to accept any further items.</p>
+
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L339" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L339" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -257,9 +262,9 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">func</span> <a href="#peek%2CChan%5BT%5D"><span class="Identifier">peek</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Returns an estimation of current number of items held by the channel.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L308" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L308" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Returns an estimation of the current number of items held by the channel.
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L335" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L335" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -270,9 +275,9 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#recv%2CChan%5BT%5D"><span class="Identifier">recv</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Receives item from the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L299" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L299" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Receives an item from the channel. A version of <a class="reference internal nimdoc" title="proc recv (2 overloads)" href="#recv-procs-all">recv</a> that returns the item.
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L323" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L323" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -280,9 +285,11 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#recv%2CChan%5BT%5D%2CT"><span class="Identifier">recv</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">dst</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Receives item from the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L295" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L295" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>Receives an item from the channel. Fills <tt class="docutils literal"><span class="pre"><span class="Identifier">dist</span></span></tt> with the item. This blocks the receiving thread until an item was successfully received.</p>
+<p>If the channel does not contain any items this will block the thread until items get sent to the channel.</p>
+
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L314" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L314" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -293,9 +300,9 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#recvIso%2CChan%5BT%5D"><span class="Identifier">recvIso</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L303" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L303" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Receives an item from the channel. A version of <a class="reference internal nimdoc" title="proc recv (2 overloads)" href="#recv-procs-all">recv</a> that returns the item and isolates it.
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L328" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L328" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -306,9 +313,11 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#send%2CChan%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">send</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Sends item to the channel (blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L283" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L283" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>Sends item to the channel. This blocks the sending thread until the item was successfully sent.</p>
+<p>If the channel is already full with items this will block the thread until items from the channel are removed.</p>
+
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L298" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L298" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -319,9 +328,12 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#tryRecv%2CChan%5BT%5D%2CT"><span class="Identifier">tryRecv</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">dst</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Receives item from the channel (non-blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L279" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L279" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>Tries to receive a message from the channel <tt class="docutils literal"><span class="pre"><span class="Identifier">c</span></span></tt> and fill <tt class="docutils literal"><span class="pre"><span class="Identifier">dst</span></span></tt> with its value. This returns immediately even if no message is found. Doesn't block.</p>
+<p>This can fail for all sort of reasons, including a lack of messages in the channel to receive or contention.</p>
+<p>If it fails it returns <tt class="docutils literal"><span class="pre"><span class="Identifier">false</span></span></tt>. Otherwise it returns <tt class="docutils literal"><span class="pre"><span class="Identifier">true</span></span></tt>.</p>
+
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L288" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L288" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -332,9 +344,12 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">proc</span> <a href="#trySend%2CChan%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">trySend</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Sends item to the channel (non-blocking).
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L268" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L268" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>Tries to send a message to a channel.</p>
+<p>The memory <tt class="docutils literal"><span class="pre"><span class="Identifier">src</span></span></tt> is moved, not copied. Doesn't block.</p>
+<p>Returns <tt class="docutils literal"><span class="pre"><span class="Identifier">false</span></span></tt> if the message was not sent because the number of pending items in the channel exceeded its capacity.</p>
+
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L272" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L272" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -352,8 +367,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Helper template for <tt class="docutils literal"><span class="pre"><span class="Identifier">send</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L291" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L291" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L310" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L310" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -364,9 +379,9 @@ This module is experimental and its interface may change.</div>
   <dt><pre><span class="Keyword">template</span> <a href="#trySend.t%2CChan%5BT%5D%2CT"><span class="Identifier">trySend</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="channels.html#Chan"><span class="Identifier">Chan</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
-    Helper template for <tt class="docutils literal"><span class="pre"><span class="Identifier">trySend</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L275" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L275" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Helper template for <a class="reference external" href="#trySend,Chan[T],sinkIsolated[T]">trySend</a>.
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L284" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L284" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -382,7 +397,7 @@ This module is experimental and its interface may change.</div>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-06 15:22:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-14 19:48:01 UTC</small>
       </div>
     </div>
   </div>
