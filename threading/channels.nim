@@ -270,7 +270,7 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   dest.d = src.d
 
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
-  ## Tries to send a message `src` to the channel `c`.
+  ## Tries to send the message `src` to the channel `c`.
   ##
   ## The memory of `src` is moved, not copied. 
   ## Doesn't block waiting for space in the channel to become available.
@@ -293,7 +293,7 @@ template trySend*[T](c: Chan[T], src: T): bool =
   trySend(c, isolate(src))
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
-  ## Tries to receive an message from the channel `c` and fill `dst` with its value.
+  ## Tries to receive a message from the channel `c` and fill `dst` with its value.
   ## 
   ## Doesn't block waiting for messages in the channel to become available.
   ## Instead returns after an attempt to receive a message was made.
@@ -306,7 +306,7 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
-  ## Sends message `src` to the channel `c`. 
+  ## Sends the message `src` to the channel `c`. 
   ## This blocks the sending thread until `src` was successfully sent.
   ## 
   ## The memory of `src` is moved, not copied. 
