@@ -273,8 +273,12 @@ proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Tries to send a message `src` to the channel `c`.
   ##
   ## The memory of `src` is moved, not copied. 
-  ## Returns immediately once the lock to the channel was acquired and an 
-  ## attempt to send it was made.
+  ## Doesn't block waiting for space in the channel to become available.
+  ## Instead returns after an attempt to send a message was made.
+  ## 
+  ## .. warning:: Blocking is still possible if another thread uses the blocking
+  ##    version of `send`/`recv` and waits for the data/space to appear in the
+  ##    channel, thus holding the internal lock to channel's buffer.
   ##
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
@@ -290,18 +294,19 @@ template trySend*[T](c: Chan[T], src: T): bool =
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Tries to receive an message from the channel `c` and fill `dst` with its value.
   ## 
-  ## Returns immediately once the lock on the Channel is acquired and an attempt
-  ## at fetching a message from it was made. 
-  ## The proc will not wait for messages to appear.
+  ## Doesn't block waiting for messages in the channel to become available.
+  ## Instead returns after an attempt to receive a message was made.
   ## 
-  ## This will fail if the channel is empty.
-  ##
-  ## If it fails it returns `false`. Otherwise it returns `true`.
+  ## .. warning:: Blocking is still possible if another thread uses the blocking
+  ##    version of `send`/`recv` and waits for the data/space to appear in the
+  ##    channel, thus holding the internal lock to channel's buffer.
+  ## 
+  ## Returns `false` and does not change `dist` if no message was received.
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   ## Sends message `src` to the channel `c`. 
-  ## This blocks the sending thread until the message was successfully sent.
+  ## This blocks the sending thread until `src` was successfully sent.
   ## 
   ## The memory of `src` is moved, not copied. 
   ## 
