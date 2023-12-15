@@ -27,7 +27,7 @@
 ## the underlying resources and synchronization. It has to be initialized using
 ## the `newChan` proc. Sending and receiving operations are provided by the
 ## blocking `send` and `recv` procs, and non-blocking `trySend` and `tryRecv`
-## procs. Send operations add messages to the channel, receiving operations 
+## procs. Send operations add items to the channel, receiving operations 
 ## remove them.
 ## 
 ## See also:
@@ -270,11 +270,13 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   dest.d = src.d
 
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
-  ## Tries to send a message to a channel.
+  ## Tries to send an item `src` to a channel `c`.
   ##
-  ## The memory `src` is moved, not copied. Doesn't block.
+  ## The memory of `src` is moved, not copied. 
+  ## Returns immediately once the lock to the channel was acquired and an 
+  ## attempt to send it was made.
   ##
-  ## Returns `false` if the message was not sent because the number of pending
+  ## Returns `false` if the item was not sent because the number of pending
   ## items in the channel exceeded its capacity.
   var data = src.extract
   result = channelSend(c.d, data.unsafeAddr, sizeof(T), false)
@@ -286,18 +288,22 @@ template trySend*[T](c: Chan[T], src: T): bool =
   trySend(c, isolate(src))
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
-  ## Tries to receive a message from the channel `c` and fill `dst` with its value.
-  ## This returns immediately even if no message is found. Doesn't block.
+  ## Tries to receive an item from the channel `c` and fill `dst` with its value.
   ## 
-  ## This can fail for all sort of reasons, including a lack of messages in the channel
-  ## to receive or contention.
+  ## Returns immediately once the lock on the Channel is acquired and an attempt
+  ## at fetching an item from it was made. 
+  ## The proc will not wait for items to appear.
+  ## 
+  ## This will fail if the channel is empty.
   ##
   ## If it fails it returns `false`. Otherwise it returns `true`.
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
-  ## Sends item to the channel. 
+  ## Sends item `src` to the channel `c`. 
   ## This blocks the sending thread until the item was successfully sent.
+  ## 
+  ## The memory of `src` is moved, not copied. 
   ## 
   ## If the channel is already full with items this will block the thread until
   ## items from the channel are removed.
@@ -312,8 +318,8 @@ template send*[T](c: Chan[T]; src: T) =
   send(c, isolate(src))
 
 proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
-  ## Receives an item from the channel.
-  ## Fills `dist` with the item. 
+  ## Receives an item from the channel `c` and fill `dst` with its value. 
+  ## 
   ## This blocks the receiving thread until an item was successfully received.
   ## 
   ## If the channel does not contain any items this will block the thread until
