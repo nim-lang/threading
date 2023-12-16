@@ -270,12 +270,19 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   dest.d = src.d
 
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
-  ## Tries to send a message to a channel.
+  ## Tries to send the message `src` to the channel `c`.
   ##
-  ## The memory `src` is moved, not copied. Doesn't block.
+  ## The memory of `src` is moved, not copied. 
+  ## Doesn't block waiting for space in the channel to become available.
+  ## Instead returns after an attempt to send a message was made.
+  ## 
+  ## .. warning:: Blocking is still possible if another thread uses the blocking
+  ##    version of the `send proc`_ / `recv proc`_ and waits for the 
+  ##    data/space to appear in the channel, thus holding the internal lock to 
+  ##    channel's buffer.
   ##
   ## Returns `false` if the message was not sent because the number of pending
-  ## items in the channel exceeded its capacity.
+  ## messages in the channel exceeded its capacity.
   var data = src.extract
   result = channelSend(c.d, data.unsafeAddr, sizeof(T), false)
   if result:
@@ -287,20 +294,25 @@ template trySend*[T](c: Chan[T], src: T): bool =
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Tries to receive a message from the channel `c` and fill `dst` with its value.
-  ## This returns immediately even if no message is found. Doesn't block.
   ## 
-  ## This can fail for all sort of reasons, including a lack of messages in the channel
-  ## to receive or contention.
-  ##
-  ## If it fails it returns `false`. Otherwise it returns `true`.
+  ## Doesn't block waiting for messages in the channel to become available.
+  ## Instead returns after an attempt to receive a message was made.
+  ## 
+  ## .. warning:: Blocking is still possible if another thread uses the blocking
+  ##    version of the `send proc`_ / `recv proc`_ and waits for the data/space to 
+  ##    appear in the channel, thus holding the internal lock to channel's buffer.
+  ## 
+  ## Returns `false` and does not change `dist` if no message was received.
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
-  ## Sends item to the channel. 
-  ## This blocks the sending thread until the item was successfully sent.
+  ## Sends the message `src` to the channel `c`. 
+  ## This blocks the sending thread until `src` was successfully sent.
   ## 
-  ## If the channel is already full with items this will block the thread until
-  ## items from the channel are removed.
+  ## The memory of `src` is moved, not copied. 
+  ## 
+  ## If the channel is already full with messages this will block the thread until
+  ## messages from the channel are removed.
   var data = src.extract
   when defined(gcOrc) and defined(nimSafeOrcSend):
     GC_runOrc()
@@ -312,35 +324,35 @@ template send*[T](c: Chan[T]; src: T) =
   send(c, isolate(src))
 
 proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
-  ## Receives an item from the channel.
-  ## Fills `dist` with the item. 
-  ## This blocks the receiving thread until an item was successfully received.
+  ## Receives a message from the channel `c` and fill `dst` with its value. 
   ## 
-  ## If the channel does not contain any items this will block the thread until
-  ## items get sent to the channel.
+  ## This blocks the receiving thread until a message was successfully received.
+  ## 
+  ## If the channel does not contain any messages this will block the thread until
+  ## a message get sent to the channel.
   discard channelReceive(c.d, dst.addr, sizeof(T), true)
 
 proc recv*[T](c: Chan[T]): T {.inline.} =
-  ## Receives an item from the channel. 
-  ## A version of `recv`_ that returns the item.
+  ## Receives a message from the channel. 
+  ## A version of `recv`_ that returns the message.
   discard channelReceive(c.d, result.addr, sizeof(result), true)
 
 proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
-  ## Receives an item from the channel.
-  ## A version of `recv`_ that returns the item and isolates it.
+  ## Receives a message from the channel.
+  ## A version of `recv`_ that returns the message and isolates it.
   var dst: T
   discard channelReceive(c.d, dst.addr, sizeof(T), true)
   result = isolate(dst)
 
 func peek*[T](c: Chan[T]): int {.inline.} =
-  ## Returns an estimation of the current number of items held by the channel.
+  ## Returns an estimation of the current number of messages held by the channel.
   numItems(c.d)
 
 proc newChan*[T](elements: Positive = 30): Chan[T] =
   ## An initialization procedure, necessary for acquiring resources and
   ## initializing internal state of the channel. 
   ## 
-  ## `elements` is the capacity of the channel and thus how many items it can hold 
-  ## before it refuses to accept any further items.
+  ## `elements` is the capacity of the channel and thus how many messages it can hold 
+  ## before it refuses to accept any further messages.
   assert elements >= 1, "Elements must be positive!"
   result = Chan[T](d: allocChannel(sizeof(T), elements))
