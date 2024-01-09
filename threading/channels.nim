@@ -130,6 +130,12 @@ proc setTail(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inl
 proc setHead(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
   chan.head.store(value, order)
 
+func getAtomicCounter(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
+  chan.atomicCounter.load(order)
+
+proc setAtomicCounter(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
+  chan.atomicCounter.store(value, order)
+
 func numItems(chan: ChannelRaw): int {.inline.} =
   result = chan.getHead() - chan.getTail()
   if result < 0:
@@ -159,7 +165,7 @@ proc allocChannel(size, n: int): ChannelRaw =
   result.slots = n
   result.setHead(0)
   result.setTail(0)
-  result.atomicCounter.store(0, moRelaxed)
+  result.setAtomicCounter(0)
 
 
 proc freeChannel(chan: ChannelRaw) =
@@ -258,7 +264,7 @@ type
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
     if c.d != nil:
-      if load(c.d.atomicCounter, moAcquire) == 0:
+      if c.d.getAtomicCounter(moAcquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
@@ -266,7 +272,7 @@ when defined(nimAllowNonVarDestructor):
 else:
   proc `=destroy`*[T](c: var Chan[T]) =
     if c.d != nil:
-      if load(c.d.atomicCounter, moAcquire) == 0:
+      if c.d.getAtomicCounter(moAcquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
