@@ -93,7 +93,7 @@ proc decr[T](p: SharedPtr[T]) {.inline.} =
   if p.val != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    if p.val.counter.fetchSub(1, Release) == 0:
+    if p.val.counter.fetchSub(1, AcqRel) == 0:
       `=destroy`(p.val.value)
       deallocShared(p.val)
 
@@ -119,7 +119,7 @@ proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
   ## Returns a shared pointer which shares
   ## ownership of the object by reference counting.
   result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  int(result.val.counter) = 0
+  result.val.counter.store(0)
   result.val.value = extract val
 
 template newSharedPtr*[T](val: T): SharedPtr[T] =
