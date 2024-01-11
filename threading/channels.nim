@@ -210,7 +210,6 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
       chan.getHead() - chan.slots
 
   copyMem(chan.buffer[writeIdx * size].addr, data, size)
-  
   atomicInc(chan.head)
   if chan.getHead() == 2 * chan.slots:
     chan.setHead(0)
