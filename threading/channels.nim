@@ -99,7 +99,8 @@ runnableExamples("--threads:on --gc:orc"):
 when not defined(gcArc) and not defined(gcOrc) and not defined(nimdoc):
   {.error: "This channel implementation requires --gc:arc or --gc:orc".}
 
-import std/[locks, atomics, isolation]
+import std/[locks, isolation]
+import ./atomics
 import system/ansi_c
 
 # Channel
@@ -118,22 +119,22 @@ type
 
 # ------------------------------------------------------------------------------
 
-func getTail(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
+func getTail(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
   chan.tail.load(order)
 
-func getHead(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
+func getHead(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
   chan.head.load(order)
 
-proc setTail(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
+proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.tail.store(value, order)
 
-proc setHead(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
+proc setHead(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.head.store(value, order)
 
-func getAtomicCounter(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
+func getAtomicCounter(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
   chan.atomicCounter.load(order)
 
-proc setAtomicCounter(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
+proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.atomicCounter.store(value, order)
 
 func numItems(chan: ChannelRaw): int {.inline.} =
@@ -264,7 +265,7 @@ type
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
     if c.d != nil:
-      if c.d.getAtomicCounter(moAcquire) == 0:
+      if c.d.getAtomicCounter(Acquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
@@ -272,7 +273,7 @@ when defined(nimAllowNonVarDestructor):
 else:
   proc `=destroy`*[T](c: var Chan[T]) =
     if c.d != nil:
-      if c.d.getAtomicCounter(moAcquire) == 0:
+      if c.d.getAtomicCounter(Acquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
