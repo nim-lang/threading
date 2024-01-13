@@ -35,7 +35,7 @@ proc threadA() {.thread.} =
       var a: SharedPtr[TestObj] = newSharedPtr(unsafeIsolate TestObj())
       var b = a
       chan.send(b)
-      assert a.isNil == false # otherwise we don't copy a?
+      doAssert a.isNil == false # otherwise we don't copy a?
       when doSleep:
         os.sleep(1)
 
