@@ -99,7 +99,8 @@ runnableExamples("--threads:on --gc:orc"):
 when not defined(gcArc) and not defined(gcOrc) and not defined(nimdoc):
   {.error: "This channel implementation requires --gc:arc or --gc:orc".}
 
-import std/[locks, atomics, isolation]
+import std/[locks, isolation]
+import ./atomics
 import system/ansi_c
 
 # Channel
@@ -111,25 +112,43 @@ type
     lock: Lock
     spaceAvailableCV, dataAvailableCV: Cond
     slots: int    ## Number of item slots in the buffer
-    head: int     ## Write/enqueue/send index
-    tail: int     ## Read/dequeue/receive index
+    head: Atomic[int]     ## Write/enqueue/send index
+    tail: Atomic[int]     ## Read/dequeue/receive index
     buffer: ptr UncheckedArray[byte]
     atomicCounter: Atomic[int]
 
 # ------------------------------------------------------------------------------
 
+func getTail(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+  chan.tail.load(order)
+
+func getHead(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+  chan.head.load(order)
+
+proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+  chan.tail.store(value, order)
+
+proc setHead(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+  chan.head.store(value, order)
+
+func getAtomicCounter(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+  chan.atomicCounter.load(order)
+
+proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+  chan.atomicCounter.store(value, order)
+
 func numItems(chan: ChannelRaw): int {.inline.} =
-  result = chan.head - chan.tail
+  result = chan.getHead() - chan.getTail()
   if result < 0:
     inc(result, 2 * chan.slots)
 
   assert result <= chan.slots
 
 template isFull(chan: ChannelRaw): bool =
-  abs(chan.head - chan.tail) == chan.slots
+  abs(chan.getHead() - chan.getTail()) == chan.slots
 
 template isEmpty(chan: ChannelRaw): bool =
-  chan.head == chan.tail
+  chan.getHead() == chan.getTail()
 
 # Channels memory ops
 # ------------------------------------------------------------------------------
@@ -145,9 +164,9 @@ proc allocChannel(size, n: int): ChannelRaw =
   initCond(result.dataAvailableCV)
 
   result.slots = n
-  result.head = 0
-  result.tail = 0
-  result.atomicCounter.store(0, moRelaxed)
+  result.setHead(0)
+  result.setTail(0)
+  result.setAtomicCounter(0)
 
 
 proc freeChannel(chan: ChannelRaw) =
@@ -186,16 +205,15 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
 
   assert not chan.isFull()
 
-  let writeIdx = if chan.head < chan.slots:
-      chan.head
+  let writeIdx = if chan.getHead() < chan.slots:
+      chan.getHead()
     else:
-      chan.head - chan.slots
+      chan.getHead() - chan.slots
 
   copyMem(chan.buffer[writeIdx * size].addr, data, size)
-
-  inc(chan.head)
-  if chan.head == 2 * chan.slots:
-    chan.head = 0
+  atomicInc(chan.head)
+  if chan.getHead() == 2 * chan.slots:
+    chan.setHead(0)
 
   signal(chan.dataAvailableCV)
   release(chan.lock)
@@ -221,16 +239,16 @@ proc channelReceive(chan: ChannelRaw, data: pointer, size: int, blocking: static
 
   assert not chan.isEmpty()
 
-  let readIdx = if chan.tail < chan.slots:
-      chan.tail
+  let readIdx = if chan.getTail() < chan.slots:
+      chan.getTail()
     else:
-      chan.tail - chan.slots
+      chan.getTail() - chan.slots
 
   copyMem(data, chan.buffer[readIdx * size].addr, size)
 
-  inc(chan.tail)
-  if chan.tail == 2 * chan.slots:
-    chan.tail = 0
+  atomicInc(chan.tail)
+  if chan.getTail() == 2 * chan.slots:
+    chan.setTail(0)
 
   signal(chan.spaceAvailableCV)
   release(chan.lock)
@@ -246,7 +264,7 @@ type
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
     if c.d != nil:
-      if load(c.d.atomicCounter, moAcquire) == 0:
+      if c.d.getAtomicCounter(Acquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
@@ -254,7 +272,7 @@ when defined(nimAllowNonVarDestructor):
 else:
   proc `=destroy`*[T](c: var Chan[T]) =
     if c.d != nil:
-      if load(c.d.atomicCounter, moAcquire) == 0:
+      if c.d.getAtomicCounter(Acquire) == 0:
         if c.d.buffer != nil:
           freeChannel(c.d)
       else:
