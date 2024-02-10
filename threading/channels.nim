@@ -137,6 +137,10 @@ func getAtomicCounter(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline
 proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.atomicCounter.store(value, order)
 
+func decrIsZero(chan: ChannelRaw): bool {.inline.} =
+  if chan.atomicCounter.fetchSub(1, AcqRel) == 0:
+    result = true
+
 func numItems(chan: ChannelRaw): int {.inline.} =
   result = chan.getHead() - chan.getTail()
   if result < 0:
@@ -261,22 +265,20 @@ type
   Chan*[T] = object ## Typed channel
     d: ChannelRaw
 
+proc decr[T](c: Chan[T]) {.inline.} =
+  if c.d != nil:
+    # this `fetchSub` returns current val then subs
+    # so count == 0 means we're the last
+    if c.d.decrIsZero():
+      if c.d.buffer != nil:
+        freeChannel(c.d)
+
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
-    if c.d != nil:
-      if c.d.getAtomicCounter(Acquire) == 0:
-        if c.d.buffer != nil:
-          freeChannel(c.d)
-      else:
-        atomicDec(c.d.atomicCounter)
+    c.decr()
 else:
   proc `=destroy`*[T](c: var Chan[T]) =
-    if c.d != nil:
-      if c.d.getAtomicCounter(Acquire) == 0:
-        if c.d.buffer != nil:
-          freeChannel(c.d)
-      else:
-        atomicDec(c.d.atomicCounter)
+    c.decr()
 
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
