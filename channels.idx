@@ -1,15 +1,15 @@
 nimTitle	channels	channels.html	module threading/channels		0
-nim	Chan	channels.html#Chan	object Chan		261
-nim	`=destroy`	channels.html#=destroy,Chan[T]	proc `=destroy`[T](c: Chan[T])		265
-nim	`=copy`	channels.html#=copy,Chan[T],Chan[T]	proc `=copy`[T](dest: var Chan[T]; src: Chan[T])		281
-nim	trySend	channels.html#trySend,Chan[T],sinkIsolated[T]	proc trySend[T](c: Chan[T]; src: sink Isolated[T]): bool		290
-nim	trySend	channels.html#trySend.t,Chan[T],T	template trySend[T](c: Chan[T]; src: T): bool		309
-nim	tryRecv	channels.html#tryRecv,Chan[T],T	proc tryRecv[T](c: Chan[T]; dst: var T): bool		313
-nim	send	channels.html#send,Chan[T],sinkIsolated[T]	proc send[T](c: Chan[T]; src: sink Isolated[T])		326
-nim	send	channels.html#send.t,Chan[T],T	template send[T](c: Chan[T]; src: T)		340
-nim	recv	channels.html#recv,Chan[T],T	proc recv[T](c: Chan[T]; dst: var T)		344
-nim	recv	channels.html#recv,Chan[T]	proc recv[T](c: Chan[T]): T		353
-nim	recvIso	channels.html#recvIso,Chan[T]	proc recvIso[T](c: Chan[T]): Isolated[T]		358
-nim	peek	channels.html#peek,Chan[T]	proc peek[T](c: Chan[T]): int		365
-nim	newChan	channels.html#newChan,Positive	proc newChan[T](elements: Positive = 30): Chan[T]		369
-nimgrp	recv	channels.html#recv-procs-all	proc		344
+nim	Chan	channels.html#Chan	object Chan		265
+nim	`=destroy`	channels.html#=destroy,Chan[T]	proc `=destroy`[T](c: Chan[T])		277
+nim	`=copy`	channels.html#=copy,Chan[T],Chan[T]	proc `=copy`[T](dest: var Chan[T]; src: Chan[T])		283
+nim	trySend	channels.html#trySend,Chan[T],sinkIsolated[T]	proc trySend[T](c: Chan[T]; src: sink Isolated[T]): bool		292
+nim	trySend	channels.html#trySend.t,Chan[T],T	template trySend[T](c: Chan[T]; src: T): bool		311
+nim	tryRecv	channels.html#tryRecv,Chan[T],T	proc tryRecv[T](c: Chan[T]; dst: var T): bool		315
+nim	send	channels.html#send,Chan[T],sinkIsolated[T]	proc send[T](c: Chan[T]; src: sink Isolated[T])		328
+nim	send	channels.html#send.t,Chan[T],T	template send[T](c: Chan[T]; src: T)		342
+nim	recv	channels.html#recv,Chan[T],T	proc recv[T](c: Chan[T]; dst: var T)		346
+nim	recv	channels.html#recv,Chan[T]	proc recv[T](c: Chan[T]): T		355
+nim	recvIso	channels.html#recvIso,Chan[T]	proc recvIso[T](c: Chan[T]): Isolated[T]		360
+nim	peek	channels.html#peek,Chan[T]	proc peek[T](c: Chan[T]): int		367
+nim	newChan	channels.html#newChan,Positive	proc newChan[T](elements: Positive = 30): Chan[T]		371
+nimgrp	recv	channels.html#recv-procs-all	proc		346
