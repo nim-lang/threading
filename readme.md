@@ -4,7 +4,7 @@ New threading primitives for Nim's `arc`/`orc` memory management modes: atomics,
 
 ## Documentation
 
-> These modules require `--mm:arc` or `--mm:orc`!
+> These modules require `--threads:on`, and one of the `--mm:arc`, `--mm:orc` or `--mm:atomicArc` compilation flags!
 
 Documentation: https://nim-lang.github.io/threading
 
