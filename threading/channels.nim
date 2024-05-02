@@ -14,7 +14,8 @@
 # .. [1] https://github.com/mratsim/weave/blob/5696d94e6358711e840f8c0b7c684fcc5cbd4472/unused/channels/channels_legacy.nim
 # .. [2] https://github.com/aprell/tasking-2.0/blob/master/src/channel_shm/channel.c
 
-## This module only works with `--gc:arc` or `--gc:orc`.
+## This module works only with one of `--mm:arc` / `--mm:atomicArc` / `--mm:orc`
+## compilation flags.
 ##
 ## .. warning:: This module is experimental and its interface may change.
 ##
@@ -96,8 +97,8 @@ runnableExamples("--threads:on --gc:orc"):
     # At least one non-successful attempt to receive the message had to occur.
     assert messages.len >= 2
 
-when not defined(gcArc) and not defined(gcOrc) and not defined(nimdoc):
-  {.error: "This channel implementation requires --gc:arc or --gc:orc".}
+when not (defined(gcArc) or defined(gcOrc) or defined(gcAtomicArc) or defined(nimdoc)):
+  {.error: "This module requires one of --mm:arc / --mm:atomicArc / --mm:orc compilation flags".}
 
 import std/[locks, isolation]
 import ./atomics
