@@ -21,7 +21,7 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="atomics.html">atomics</a>, <a href="channels.html">channels</a>, <a href="smartptrs.html">smartptrs</a>, <a href="waitgroups.html">waitgroups</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="atomics.html">atomics</a>, <a href="barrier.html">barrier</a>, <a href="channels.html">channels</a>, <a href="once.html">once</a>, <a href="rwlock.html">rwlock</a>, <a href="semaphore.html">semaphore</a>, <a href="smartptrs.html">smartptrs</a>, <a href="waitgroups.html">waitgroups</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="smartptrs: proc `$`[T](p: ConstPtr[T]): string" href="smartptrs.html#%24%2CConstPtr%5BT%5D">smartptrs: proc `$`[T](p: ConstPtr[T]): string</a></li>
@@ -42,7 +42,15 @@
 <li><a class="reference external"
           data-doc-search-tag="atomics: proc `=copy`[T](dst: var Atomic[T]; src: Atomic[T])" href="atomics.html#%3Dcopy%2CAtomic%5BT%5D%2CAtomic%5BT%5D">atomics: proc `=copy`[T](dst: var Atomic[T]; src: Atomic[T])</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="barrier: proc `=copy`(dest: var Barrier; src: Barrier)" href="barrier.html#%3Dcopy%2CBarrier%2CBarrier">barrier: proc `=copy`(dest: var Barrier; src: Barrier)</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="channels: proc `=copy`[T](dest: var Chan[T]; src: Chan[T])" href="channels.html#%3Dcopy%2CChan%5BT%5D%2CChan%5BT%5D">channels: proc `=copy`[T](dest: var Chan[T]; src: Chan[T])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="once: proc `=copy`(dest: var Once; source: Once)" href="once.html#%3Dcopy%2COnce%2COnce">once: proc `=copy`(dest: var Once; source: Once)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="rwlock: proc `=copy`(dest: var RwLock; source: RwLock)" href="rwlock.html#%3Dcopy%2CRwLock%2CRwLock">rwlock: proc `=copy`(dest: var RwLock; source: RwLock)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="semaphore: proc `=copy`(dest: var Semaphore; src: Semaphore)" href="semaphore.html#%3Dcopy%2CSemaphore%2CSemaphore">semaphore: proc `=copy`(dest: var Semaphore; src: Semaphore)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="smartptrs: proc `=copy`[T](dest: var SharedPtr[T]; src: SharedPtr[T])" href="smartptrs.html#%3Dcopy%2CSharedPtr%5BT%5D%2CSharedPtr%5BT%5D">smartptrs: proc `=copy`[T](dest: var SharedPtr[T]; src: SharedPtr[T])</a></li>
           <li><a class="reference external"
@@ -50,7 +58,15 @@
           </ul></dd>
 <dt><a name="%60%3Ddestroy%60" href="#%60%3Ddestroy%60"><span>`=destroy`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="barrier: proc `=destroy`(b: Barrier)" href="barrier.html#%3Ddestroy%2CBarrier">barrier: proc `=destroy`(b: Barrier)</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="channels: proc `=destroy`[T](c: Chan[T])" href="channels.html#%3Ddestroy%2CChan%5BT%5D">channels: proc `=destroy`[T](c: Chan[T])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="once: proc `=destroy`(o: Once)" href="once.html#%3Ddestroy%2COnce">once: proc `=destroy`(o: Once)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="rwlock: proc `=destroy`(rw: RwLock)" href="rwlock.html#%3Ddestroy%2CRwLock">rwlock: proc `=destroy`(rw: RwLock)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="semaphore: proc `=destroy`(s: Semaphore)" href="semaphore.html#%3Ddestroy%2CSemaphore">semaphore: proc `=destroy`(s: Semaphore)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="smartptrs: proc `=destroy`[T](p: SharedPtr[T])" href="smartptrs.html#%3Ddestroy%2CSharedPtr%5BT%5D">smartptrs: proc `=destroy`[T](p: SharedPtr[T])</a></li>
           <li><a class="reference external"
@@ -65,6 +81,14 @@
 <dt><a name="%60%3Dsink%60" href="#%60%3Dsink%60"><span>`=sink`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="atomics: proc `=sink`[T](dst: var Atomic[T]; src: Atomic[T])" href="atomics.html#%3Dsink%2CAtomic%5BT%5D%2CAtomic%5BT%5D">atomics: proc `=sink`[T](dst: var Atomic[T]; src: Atomic[T])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="barrier: proc `=sink`(dest: var Barrier; src: Barrier)" href="barrier.html#%3Dsink%2CBarrier%2CBarrier">barrier: proc `=sink`(dest: var Barrier; src: Barrier)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="once: proc `=sink`(dest: var Once; source: Once)" href="once.html#%3Dsink%2COnce%2COnce">once: proc `=sink`(dest: var Once; source: Once)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="rwlock: proc `=sink`(dest: var RwLock; source: RwLock)" href="rwlock.html#%3Dsink%2CRwLock%2CRwLock">rwlock: proc `=sink`(dest: var RwLock; source: RwLock)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="semaphore: proc `=sink`(dest: var Semaphore; src: Semaphore)" href="semaphore.html#%3Dsink%2CSemaphore%2CSemaphore">semaphore: proc `=sink`(dest: var Semaphore; src: Semaphore)</a></li>
           </ul></dd>
 <dt><a name="%60%5B%5D%3D%60" href="#%60%5B%5D%3D%60"><span>`[]=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -98,6 +122,18 @@
 <li><a class="reference external"
           data-doc-search-tag="atomics: proc atomicInc[T: SomeInteger](location: var Atomic[T]; value: T = 1)" href="atomics.html#atomicInc%2CAtomic%5BT%3A%20SomeInteger%5D%2CT">atomics: proc atomicInc[T: SomeInteger](location: var Atomic[T]; value: T = 1)</a></li>
           </ul></dd>
+<dt><a name="Barrier" href="#Barrier"><span>Barrier:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="barrier: object Barrier" href="barrier.html#Barrier">barrier: object Barrier</a></li>
+          </ul></dd>
+<dt><a name="beginRead" href="#beginRead"><span>beginRead:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: proc beginRead(rw: var RwLock)" href="rwlock.html#beginRead%2CRwLock">rwlock: proc beginRead(rw: var RwLock)</a></li>
+          </ul></dd>
+<dt><a name="beginWrite" href="#beginWrite"><span>beginWrite:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: proc beginWrite(rw: var RwLock)" href="rwlock.html#beginWrite%2CRwLock">rwlock: proc beginWrite(rw: var RwLock)</a></li>
+          </ul></dd>
 <dt><a name="Chan" href="#Chan"><span>Chan:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="channels: object Chan" href="channels.html#Chan">channels: object Chan</a></li>
@@ -126,9 +162,33 @@
 <li><a class="reference external"
           data-doc-search-tag="smartptrs: type ConstPtr" href="smartptrs.html#ConstPtr">smartptrs: type ConstPtr</a></li>
           </ul></dd>
+<dt><a name="createBarrier" href="#createBarrier"><span>createBarrier:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="barrier: proc createBarrier(parties: Natural): Barrier" href="barrier.html#createBarrier%2CNatural">barrier: proc createBarrier(parties: Natural): Barrier</a></li>
+          </ul></dd>
+<dt><a name="createOnce" href="#createOnce"><span>createOnce:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="once: proc createOnce(): Once" href="once.html#createOnce">once: proc createOnce(): Once</a></li>
+          </ul></dd>
+<dt><a name="createRwLock" href="#createRwLock"><span>createRwLock:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: proc createRwLock(): RwLock" href="rwlock.html#createRwLock">rwlock: proc createRwLock(): RwLock</a></li>
+          </ul></dd>
+<dt><a name="createSemaphore" href="#createSemaphore"><span>createSemaphore:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="semaphore: proc createSemaphore(count: Natural = 0): Semaphore" href="semaphore.html#createSemaphore%2CNatural">semaphore: proc createSemaphore(count: Natural = 0): Semaphore</a></li>
+          </ul></dd>
 <dt><a name="createWaitGroup" href="#createWaitGroup"><span>createWaitGroup:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="waitgroups: proc createWaitGroup(): WaitGroup" href="waitgroups.html#createWaitGroup">waitgroups: proc createWaitGroup(): WaitGroup</a></li>
+          </ul></dd>
+<dt><a name="endRead" href="#endRead"><span>endRead:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: proc endRead(rw: var RwLock)" href="rwlock.html#endRead%2CRwLock">rwlock: proc endRead(rw: var RwLock)</a></li>
+          </ul></dd>
+<dt><a name="endWrite" href="#endWrite"><span>endWrite:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: proc endWrite(rw: var RwLock)" href="rwlock.html#endWrite%2CRwLock">rwlock: proc endWrite(rw: var RwLock)</a></li>
           </ul></dd>
 <dt><a name="enter" href="#enter"><span>enter:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -210,6 +270,14 @@
           <li><a class="reference external"
           data-doc-search-tag="smartptrs: template newUniquePtr[T](val: T): UniquePtr[T]" href="smartptrs.html#newUniquePtr.t%2CT">smartptrs: template newUniquePtr[T](val: T): UniquePtr[T]</a></li>
           </ul></dd>
+<dt><a name="Once" href="#Once"><span>Once:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="once: object Once" href="once.html#Once">once: object Once</a></li>
+          </ul></dd>
+<dt><a name="once" href="#once"><span>once:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="once: template once(o: Once; body: untyped)" href="once.html#once.t%2COnce%2Cuntyped">once: template once(o: Once; body: untyped)</a></li>
+          </ul></dd>
 <dt><a name="Ordering" href="#Ordering"><span>Ordering:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="atomics: enum Ordering" href="atomics.html#Ordering">atomics: enum Ordering</a></li>
@@ -217,6 +285,10 @@
 <dt><a name="peek" href="#peek"><span>peek:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="channels: proc peek[T](c: Chan[T]): int" href="channels.html#peek%2CChan%5BT%5D">channels: proc peek[T](c: Chan[T]): int</a></li>
+          </ul></dd>
+<dt><a name="readWith" href="#readWith"><span>readWith:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: template readWith(a: RwLock; body: untyped)" href="rwlock.html#readWith.t%2CRwLock%2Cuntyped">rwlock: template readWith(a: RwLock; body: untyped)</a></li>
           </ul></dd>
 <dt><a name="recv" href="#recv"><span>recv:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -228,6 +300,14 @@
 <li><a class="reference external"
           data-doc-search-tag="channels: proc recvIso[T](c: Chan[T]): Isolated[T]" href="channels.html#recvIso%2CChan%5BT%5D">channels: proc recvIso[T](c: Chan[T]): Isolated[T]</a></li>
           </ul></dd>
+<dt><a name="RwLock" href="#RwLock"><span>RwLock:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: object RwLock" href="rwlock.html#RwLock">rwlock: object RwLock</a></li>
+          </ul></dd>
+<dt><a name="Semaphore" href="#Semaphore"><span>Semaphore:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="semaphore: object Semaphore" href="semaphore.html#Semaphore">semaphore: object Semaphore</a></li>
+          </ul></dd>
 <dt><a name="send" href="#send"><span>send:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="channels: proc send[T](c: Chan[T]; src: sink Isolated[T])" href="channels.html#send%2CChan%5BT%5D%2CsinkIsolated%5BT%5D">channels: proc send[T](c: Chan[T]; src: sink Isolated[T])</a></li>
@@ -237,6 +317,10 @@
 <dt><a name="SharedPtr" href="#SharedPtr"><span>SharedPtr:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="smartptrs: object SharedPtr" href="smartptrs.html#SharedPtr">smartptrs: object SharedPtr</a></li>
+          </ul></dd>
+<dt><a name="signal" href="#signal"><span>signal:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="semaphore: proc signal(s: var Semaphore)" href="semaphore.html#signal%2CSemaphore">semaphore: proc signal(s: var Semaphore)</a></li>
           </ul></dd>
 <dt><a name="store" href="#store"><span>store:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -258,17 +342,25 @@
           </ul></dd>
 <dt><a name="wait" href="#wait"><span>wait:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="barrier: proc wait(b: var Barrier)" href="barrier.html#wait%2CBarrier">barrier: proc wait(b: var Barrier)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="semaphore: proc wait(s: var Semaphore)" href="semaphore.html#wait%2CSemaphore">semaphore: proc wait(s: var Semaphore)</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="waitgroups: proc wait(b: var WaitGroup)" href="waitgroups.html#wait%2CWaitGroup">waitgroups: proc wait(b: var WaitGroup)</a></li>
           </ul></dd>
 <dt><a name="WaitGroup" href="#WaitGroup"><span>WaitGroup:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="waitgroups: object WaitGroup" href="waitgroups.html#WaitGroup">waitgroups: object WaitGroup</a></li>
           </ul></dd>
+<dt><a name="writeWith" href="#writeWith"><span>writeWith:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="rwlock: template writeWith(a: RwLock; body: untyped)" href="rwlock.html#writeWith.t%2CRwLock%2Cuntyped">rwlock: template writeWith(a: RwLock; body: untyped)</a></li>
+          </ul></dd>
 </dl>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-02 12:41:23 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-08 03:42:01 UTC</small>
       </div>
     </div>
   </div>

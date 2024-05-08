@@ -1,0 +1,12 @@
+nimTitle	rwlock	rwlock.html	module threading/rwlock		0
+nim	RwLock	rwlock.html#RwLock	object RwLock		38
+nim	`=destroy`	rwlock.html#=destroy,RwLock	proc `=destroy`(rw: RwLock)		47
+nim	`=sink`	rwlock.html#=sink,RwLock,RwLock	proc `=sink`(dest: var RwLock; source: RwLock)		56
+nim	`=copy`	rwlock.html#=copy,RwLock,RwLock	proc `=copy`(dest: var RwLock; source: RwLock)		57
+nim	createRwLock	rwlock.html#createRwLock	proc createRwLock(): RwLock		59
+nim	beginRead	rwlock.html#beginRead,RwLock	proc beginRead(rw: var RwLock)		64
+nim	beginWrite	rwlock.html#beginWrite,RwLock	proc beginWrite(rw: var RwLock)		72
+nim	endRead	rwlock.html#endRead,RwLock	proc endRead(rw: var RwLock)		82
+nim	endWrite	rwlock.html#endWrite,RwLock	proc endWrite(rw: var RwLock)		89
+nim	readWith	rwlock.html#readWith.t,RwLock,untyped	template readWith(a: RwLock; body: untyped)		96
+nim	writeWith	rwlock.html#writeWith.t,RwLock,untyped	template writeWith(a: RwLock; body: untyped)		105

@@ -1,0 +1,7 @@
+nimTitle	barrier	barrier.html	module threading/barrier		0
+nim	Barrier	barrier.html#Barrier	object Barrier		38
+nim	`=destroy`	barrier.html#=destroy,Barrier	proc `=destroy`(b: Barrier)		56
+nim	`=sink`	barrier.html#=sink,Barrier,Barrier	proc `=sink`(dest: var Barrier; src: Barrier)		65
+nim	`=copy`	barrier.html#=copy,Barrier,Barrier	proc `=copy`(dest: var Barrier; src: Barrier)		66
+nim	createBarrier	barrier.html#createBarrier,Natural	proc createBarrier(parties: Natural): Barrier		68
+nim	wait	barrier.html#wait,Barrier	proc wait(b: var Barrier)		75

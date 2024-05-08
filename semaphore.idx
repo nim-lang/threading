@@ -1,0 +1,8 @@
+nimTitle	semaphore	semaphore.html	module threading/semaphore		0
+nim	Semaphore	semaphore.html#Semaphore	object Semaphore		33
+nim	`=destroy`	semaphore.html#=destroy,Semaphore	proc `=destroy`(s: Semaphore)		52
+nim	`=sink`	semaphore.html#=sink,Semaphore,Semaphore	proc `=sink`(dest: var Semaphore; src: Semaphore)		61
+nim	`=copy`	semaphore.html#=copy,Semaphore,Semaphore	proc `=copy`(dest: var Semaphore; src: Semaphore)		62
+nim	createSemaphore	semaphore.html#createSemaphore,Natural	proc createSemaphore(count: Natural = 0): Semaphore		64
+nim	wait	semaphore.html#wait,Semaphore	proc wait(s: var Semaphore)		70
+nim	signal	semaphore.html#signal,Semaphore	proc signal(s: var Semaphore)		79
