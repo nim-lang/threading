@@ -19,5 +19,5 @@ nim	atomicInc	atomics.html#atomicInc,Atomic[T: SomeInteger],T	proc atomicInc[T: 
 nim	atomicDec	atomics.html#atomicDec,Atomic[T: SomeInteger],T	proc atomicDec[T: SomeInteger](location: var Atomic[T]; value: T = 1)		160
 nim	`+=`	atomics.html#+=,Atomic[T: SomeInteger],T	proc `+=`[T: SomeInteger](location: var Atomic[T]; value: T)		165
 nim	`-=`	atomics.html#-=,Atomic[T: SomeInteger],T	proc `-=`[T: SomeInteger](location: var Atomic[T]; value: T)		169
-nimgrp	compareexchangeweak	atomics.html#compareExchangeWeak-procs-all	proc		110
 nimgrp	compareexchange	atomics.html#compareExchange-procs-all	proc		95
+nimgrp	compareexchangeweak	atomics.html#compareExchangeWeak-procs-all	proc		110

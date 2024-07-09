@@ -30,13 +30,13 @@ nim	isNil	smartptrs.html#isNil,ConstPtr[T]	proc isNil[T](p: ConstPtr[T]): bool		
 nim	`[]`	smartptrs.html#[],ConstPtr[T]	proc `[]`[T](p: ConstPtr[T]): lent T		171
 nim	`[]=`	smartptrs.html#[]=,ConstPtr[T],T	proc `[]=`[T](p: ConstPtr[T]; v: T)		176
 nim	`$`	smartptrs.html#$,ConstPtr[T]	proc `$`[T](p: ConstPtr[T]): string		178
+nimgrp	=dup	smartptrs.html#=dup-procs-all	proc		38
 nimgrp	$	smartptrs.html#$-procs-all	proc		81
-nimgrp	isnil	smartptrs.html#isNil-procs-all	proc		66
+nimgrp	=destroy	smartptrs.html#=destroy-procs-all	proc		28
 nimgrp	[]=	smartptrs.html#[]=-procs-all	proc		74
 nimgrp	=copy	smartptrs.html#=copy-procs-all	proc		42
-nimgrp	=dup	smartptrs.html#=dup-procs-all	proc		38
-nimgrp	newuniqueptr	smartptrs.html#newUniquePtr-procs-all	proc		46
-nimgrp	newsharedptr	smartptrs.html#newSharedPtr-procs-all	proc		118
-nimgrp	=destroy	smartptrs.html#=destroy-procs-all	proc		28
 nimgrp	[]	smartptrs.html#[]-procs-all	proc		69
+nimgrp	newuniqueptr	smartptrs.html#newUniquePtr-procs-all	proc		46
+nimgrp	isnil	smartptrs.html#isNil-procs-all	proc		66
+nimgrp	newsharedptr	smartptrs.html#newSharedPtr-procs-all	proc		118
 nimgrp	[]=	smartptrs.html#[]=-templates-all	template		78
