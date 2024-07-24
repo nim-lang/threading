@@ -54,8 +54,9 @@ type
   Once* = object
     ## Once is a type that allows you to execute a block of code exactly once.
     ## The first call to `once` will execute the block of code and all other
-    ## calls will be ignored. The return from the returning call synchronizes
-    ## with the returns from all passive calls on the same `Once`
+    ## calls will be ignored. All concurrent calls to `once` are guaranteed to
+    ## observe any side-effects made by the active call, with no additional
+    ## synchronization.
     state: Atomic[int]
     L: Lock
     c: Cond
@@ -63,7 +64,7 @@ type
 const
   Unset = 0
   Pending = 1
-  Complete = high(int)
+  Complete = -1
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*(o: Once) {.inline.} =
