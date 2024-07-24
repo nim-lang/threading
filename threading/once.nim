@@ -35,8 +35,7 @@ runnableExamples:
     try:
       for i in 1..1000:
         let inst = getInstance()
-        if inst != nil:
-          assert inst.data == 1
+        assert inst.data == 1
     except ValueError:
       echo "Caught expected ValueError"
 
@@ -44,8 +43,7 @@ runnableExamples:
   for i in 0..<10:
     createThread(threads[i], worker)
   joinThreads(threads)
-  if instance != nil:
-    deallocShared(instance)
+  deallocShared(instance)
   echo "All threads completed"
 
 import std / [locks, atomics]
