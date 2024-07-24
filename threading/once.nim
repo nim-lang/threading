@@ -17,25 +17,36 @@ runnableExamples:
   var
     counter = 1
     instance: ptr Singleton
+    exceptionOccurred = false
     o = createOnce()
 
   proc getInstance(): ptr Singleton =
     once(o):
+      if not exceptionOccurred:
+        # Simulate an exception on the first call
+        exceptionOccurred = true
+        raise newException(ValueError, "Simulated error")
       instance = createSharedU(Singleton)
       instance.data = counter
       inc counter
     result = instance
 
   proc worker {.thread.} =
-    for i in 1..1000:
-      assert getInstance().data == 1
+    try:
+      for i in 1..1000:
+        let inst = getInstance()
+        if inst != nil:
+          assert inst.data == 1
+    except ValueError:
+      echo "Caught expected ValueError"
 
   var threads: array[10, Thread[void]]
   for i in 0..<10:
     createThread(threads[i], worker)
   joinThreads(threads)
-  deallocShared(instance)
-
+  if instance != nil:
+    deallocShared(instance)
+  echo "All threads completed"
 
 import std / [locks, atomics]
 
@@ -43,17 +54,26 @@ type
   Once* = object
     ## Once is a type that allows you to execute a block of code exactly once.
     ## The first call to `once` will execute the block of code and all other
-    ## calls will be ignored.
+    ## calls will be ignored. The return from the returning call synchronizes
+    ## with the returns from all passive calls on the same `Once`
+    state: Atomic[int]
     L: Lock
-    finished: Atomic[bool]
+    c: Cond
+
+const
+  Unset = 0
+  Pending = 1
+  Complete = high(int)
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*(o: Once) {.inline.} =
     let x = addr(o)
     deinitLock(x.L)
+    deinitCond(x.c)
 else:
   proc `=destroy`*(o: var Once) {.inline.} =
     deinitLock(o.L)
+    deinitCond(o.c)
 
 proc `=sink`*(dest: var Once; source: Once) {.error.}
 proc `=copy`*(dest: var Once; source: Once) {.error.}
@@ -61,16 +81,27 @@ proc `=copy`*(dest: var Once; source: Once) {.error.}
 proc createOnce*(): Once =
   result = default(Once)
   initLock(result.L)
+  initCond(result.c)
 
 template once*(o: Once, body: untyped) =
   ## Executes `body` exactly once.
-  if not o.finished.load(moAcquire):
-    acquire(o.L)
+  acquire(o.L)
+  while o.state.load(moRelaxed) == Pending:
+    wait(o.c, o.L)
+  if o.state.load(moRelaxed) == Unset:
+    o.state.store(Pending, moRelaxed)
+    release(o.L)
     try:
-      if not o.finished.load(moRelaxed):
-        try:
-          body
-        finally:
-          o.finished.store(true, moRelease)
-    finally:
+      body
+      acquire(o.L)
+      o.state.store(Complete, moRelease)
+      broadcast(o.c)
       release(o.L)
+    except:
+      acquire(o.L)
+      o.state.store(Unset, moRelaxed)
+      broadcast(o.c)
+      release(o.L)
+      raise
+  else:
+    release(o.L)
