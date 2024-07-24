@@ -46,7 +46,7 @@ runnableExamples:
   deallocShared(instance)
   echo "All threads completed"
 
-import std / [locks, atomics]
+import std / locks
 
 type
   Once* = object
@@ -55,7 +55,7 @@ type
     ## calls will be ignored. All concurrent calls to `once` are guaranteed to
     ## observe any side-effects made by the active call, with no additional
     ## synchronization.
-    state: Atomic[int]
+    state: int
     L: Lock
     c: Cond
 
@@ -85,20 +85,20 @@ proc createOnce*(): Once =
 template once*(o: Once, body: untyped) =
   ## Executes `body` exactly once.
   acquire(o.L)
-  while o.state.load(moRelaxed) == Pending:
+  while o.state == Pending:
     wait(o.c, o.L)
-  if o.state.load(moRelaxed) == Unset:
-    o.state.store(Pending, moRelaxed)
+  if o.state == Unset:
+    o.state = Pending
     release(o.L)
     try:
       body
       acquire(o.L)
-      o.state.store(Complete, moRelease)
+      o.state = Complete
       broadcast(o.c)
       release(o.L)
     except:
       acquire(o.L)
-      o.state.store(Unset, moRelaxed)
+      o.state = Unset
       broadcast(o.c)
       release(o.L)
       raise
