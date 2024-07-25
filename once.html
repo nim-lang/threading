@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.1.1">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.1.9">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.1.1"></script>
+<script type="text/javascript" src="dochack.js?v=2.1.9"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -117,24 +117,34 @@
 <span class="Keyword">var</span>
   <span class="Identifier">counter</span> <span class="Operator">=</span> <span class="DecNumber">1</span>
   <span class="Identifier">instance</span><span class="Punctuation">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Singleton</span>
+  <span class="Identifier">exceptionOccurred</span> <span class="Operator">=</span> <span class="Identifier">false</span>
   <span class="Identifier">o</span> <span class="Operator">=</span> <span class="Identifier">createOnce</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">getInstance</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Singleton</span> <span class="Operator">=</span>
   <span class="Identifier">once</span><span class="Punctuation">(</span><span class="Identifier">o</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Keyword">if</span> <span class="Keyword">not</span> <span class="Identifier">exceptionOccurred</span><span class="Punctuation">:</span>
+      <span class="Comment"># Simulate an exception on the first call</span>
+      <span class="Identifier">exceptionOccurred</span> <span class="Operator">=</span> <span class="Identifier">true</span>
+      <span class="Keyword">raise</span> <span class="Identifier">newException</span><span class="Punctuation">(</span><span class="Identifier">ValueError</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Simulated error&quot;</span><span class="Punctuation">)</span>
     <span class="Identifier">instance</span> <span class="Operator">=</span> <span class="Identifier">createSharedU</span><span class="Punctuation">(</span><span class="Identifier">Singleton</span><span class="Punctuation">)</span>
     <span class="Identifier">instance</span><span class="Operator">.</span><span class="Identifier">data</span> <span class="Operator">=</span> <span class="Identifier">counter</span>
     <span class="Identifier">inc</span> <span class="Identifier">counter</span>
   <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">instance</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">worker</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">thread</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
-  <span class="Keyword">for</span> <span class="Identifier">i</span> <span class="Keyword">in</span> <span class="FloatNumber">1.</span><span class="Operator">.</span><span class="DecNumber">1000</span><span class="Punctuation">:</span>
-    <span class="Identifier">assert</span> <span class="Identifier">getInstance</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">data</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
+  <span class="Keyword">try</span><span class="Punctuation">:</span>
+    <span class="Keyword">for</span> <span class="Identifier">i</span> <span class="Keyword">in</span> <span class="FloatNumber">1.</span><span class="Operator">.</span><span class="DecNumber">1000</span><span class="Punctuation">:</span>
+      <span class="Keyword">let</span> <span class="Identifier">inst</span> <span class="Operator">=</span> <span class="Identifier">getInstance</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+      <span class="Identifier">assert</span> <span class="Identifier">inst</span><span class="Operator">.</span><span class="Identifier">data</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
+  <span class="Keyword">except</span> <span class="Identifier">ValueError</span><span class="Punctuation">:</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;Caught expected ValueError&quot;</span>
 
 <span class="Keyword">var</span> <span class="Identifier">threads</span><span class="Punctuation">:</span> <span class="Identifier">array</span><span class="Punctuation">[</span><span class="DecNumber">10</span><span class="Punctuation">,</span> <span class="Identifier">Thread</span><span class="Punctuation">[</span><span class="Identifier">void</span><span class="Punctuation">]</span><span class="Punctuation">]</span>
 <span class="Keyword">for</span> <span class="Identifier">i</span> <span class="Keyword">in</span> <span class="FloatNumber">0.</span><span class="Operator">.&lt;</span><span class="DecNumber">10</span><span class="Punctuation">:</span>
   <span class="Identifier">createThread</span><span class="Punctuation">(</span><span class="Identifier">threads</span><span class="Punctuation">[</span><span class="Identifier">i</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">worker</span><span class="Punctuation">)</span>
 <span class="Identifier">joinThreads</span><span class="Punctuation">(</span><span class="Identifier">threads</span><span class="Punctuation">)</span>
-<span class="Identifier">deallocShared</span><span class="Punctuation">(</span><span class="Identifier">instance</span><span class="Punctuation">)</span></pre></p>
+<span class="Identifier">deallocShared</span><span class="Punctuation">(</span><span class="Identifier">instance</span><span class="Punctuation">)</span>
+<span class="Identifier">echo</span> <span class="StringLit">&quot;All threads completed&quot;</span></pre></p>
     <div class="section" id="7">
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
@@ -142,9 +152,9 @@
   <dt><pre><a href="once.html#Once"><span class="Identifier">Once</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
-    Once is a type that allows you to execute a block of code exactly once. The first call to <tt class="docutils literal"><span class="pre"><span class="Identifier">once</span></span></tt> will execute the block of code and all other calls will be ignored.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L43" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L43" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Once is a type that allows you to execute a block of code exactly once. The first call to <tt class="docutils literal"><span class="pre"><span class="Identifier">once</span></span></tt> will execute the block of code and all other calls will be ignored. All concurrent calls to <tt class="docutils literal"><span class="pre"><span class="Identifier">once</span></span></tt> are guaranteed to observe any side-effects made by the active call, with no additional synchronization.
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L52" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L52" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -160,8 +170,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L59" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L59" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L78" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L78" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -173,8 +183,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L51" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L51" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L68" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L68" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -186,8 +196,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L58" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L58" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L77" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L77" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -199,8 +209,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L61" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L61" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L80" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L80" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -218,8 +228,8 @@
   <dd>
     
     Executes <tt class="docutils literal"><span class="pre"><span class="Identifier">body</span></span></tt> exactly once.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L65" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L65" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/once.nim#L85" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/once.nim#L85" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -235,7 +245,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-09 05:07:58 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-25 20:05:35 UTC</small>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 nimTitle	once	once.html	module threading/once		0
-nim	Once	once.html#Once	object Once		43
-nim	`=destroy`	once.html#=destroy,Once	proc `=destroy`(o: Once)		51
-nim	`=sink`	once.html#=sink,Once,Once	proc `=sink`(dest: var Once; source: Once)		58
-nim	`=copy`	once.html#=copy,Once,Once	proc `=copy`(dest: var Once; source: Once)		59
-nim	createOnce	once.html#createOnce	proc createOnce(): Once		61
-nim	once	once.html#once.t,Once,untyped	template once(o: Once; body: untyped)		65
+nim	Once	once.html#Once	object Once		52
+nim	`=destroy`	once.html#=destroy,Once	proc `=destroy`(o: Once)		68
+nim	`=sink`	once.html#=sink,Once,Once	proc `=sink`(dest: var Once; source: Once)		77
+nim	`=copy`	once.html#=copy,Once,Once	proc `=copy`(dest: var Once; source: Once)		78
+nim	createOnce	once.html#createOnce	proc createOnce(): Once		80
+nim	once	once.html#once.t,Once,untyped	template once(o: Once; body: untyped)		85
