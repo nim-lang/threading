@@ -41,7 +41,7 @@ type
     c: Cond
     L: Lock
     activeReaders, waitingWriters: int
-    activeWriter: bool
+    isWriterActive: bool
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*(rw: RwLock) {.inline.} =
@@ -64,7 +64,7 @@ proc createRwLock*(): RwLock =
 proc beginRead*(rw: var RwLock) =
   ## Acquire a read lock.
   acquire(rw.L)
-  while rw.waitingWriters > 0 or rw.activeWriter:
+  while rw.waitingWriters > 0 or rw.isWriterActive:
     wait(rw.c, rw.L)
   inc rw.activeReaders
   release(rw.L)
@@ -73,24 +73,24 @@ proc beginWrite*(rw: var RwLock) =
   ## Acquire a write lock.
   acquire(rw.L)
   inc rw.waitingWriters
-  while rw.activeReaders > 0 or rw.activeWriter:
+  while rw.activeReaders > 0 or rw.isWriterActive:
     wait(rw.c, rw.L)
   dec rw.waitingWriters
-  rw.activeWriter = true
+  rw.isWriterActive = true
   release(rw.L)
 
 proc endRead*(rw: var RwLock) {.inline.} =
   ## Release a read lock.
   acquire(rw.L)
   dec rw.activeReaders
-  rw.c.broadcast()
+  broadcast(rw.c)
   release(rw.L)
 
 proc endWrite*(rw: var RwLock) {.inline.} =
   ## Release a write lock.
   acquire(rw.L)
-  rw.activeWriter = false
-  rw.c.broadcast()
+  rw.isWriterActive = false
+  broadcast(rw.c)
   release(rw.L)
 
 template readWith*(a: RwLock, body: untyped) =
