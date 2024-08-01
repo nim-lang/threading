@@ -303,13 +303,13 @@ else:
 
 proc `=dup`*[T](src: Chan[T]): Chan[T] =
   if src.d != nil:
-    atomicInc(src.d.atomicCounter)
+    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
   result.d = src.d
 
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
-    atomicInc(src.d.atomicCounter)
+    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
   `=destroy`(dest)
   dest.d = src.d
 
