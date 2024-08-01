@@ -112,9 +112,9 @@ type
   ChannelObj = object
     lock: Lock
     spaceAvailableCV, dataAvailableCV: Cond
-    slots: int    ## Number of item slots in the buffer
-    head: Atomic[int]     ## Write/enqueue/send index
-    tail: Atomic[int]     ## Read/dequeue/receive index
+    slots: int         ## Number of item slots in the buffer
+    head: Atomic[int]  ## Write/enqueue/send index
+    tail: Atomic[int]  ## Read/dequeue/receive index
     buffer: ptr UncheckedArray[byte]
     atomicCounter: Atomic[int]
 
@@ -301,13 +301,16 @@ else:
   proc `=destroy`*[T](c: var Chan[T]) =
     frees(c)
 
+proc `=dup`*[T](src: Chan[T]): Chan[T] =
+  if src.d != nil:
+    atomicInc(src.d.atomicCounter)
+  result.d = src.d
+
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
     atomicInc(src.d.atomicCounter)
-
-  if dest.d != nil:
-    `=destroy`(dest)
+  `=destroy`(dest)
   dest.d = src.d
 
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
