@@ -167,12 +167,16 @@ template `+!`(p: pointer, s: SomeInteger): untyped =
 template `-!`(p: pointer, s: SomeInteger): untyped =
   cast[pointer](cast[int](p) -% int(s))
 
+import strutils
+
 proc allocChannel(size, align, n: int): ChannelRaw =
   result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
 
   # To buffer n items, we allocate for n
   if align <= MemAlign:
-    result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
+    for i in 0..10:
+      result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
+      echo cast[int](result.buffer).toHex
   else:
     # adapted from Nim/lib/system/memalloc.nim
     let base = c_malloc(csize_t(n*size) + csize_t(align - 1) + csize_t sizeof(uint16))
