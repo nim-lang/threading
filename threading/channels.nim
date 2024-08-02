@@ -112,18 +112,18 @@ type
   ChannelObj = object
     lock: Lock
     spaceAvailableCV, dataAvailableCV: Cond
-    slots: int    ## Number of item slots in the buffer
-    head: Atomic[int]     ## Write/enqueue/send index
-    tail: Atomic[int]     ## Read/dequeue/receive index
+    slots: int         ## Number of item slots in the buffer
+    head: Atomic[int]  ## Write/enqueue/send index
+    tail: Atomic[int]  ## Read/dequeue/receive index
     buffer: ptr UncheckedArray[byte]
     atomicCounter: Atomic[int]
 
 # ------------------------------------------------------------------------------
 
-func getTail(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+proc getTail(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
   chan.tail.load(order)
 
-func getHead(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+proc getHead(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
   chan.head.load(order)
 
 proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
@@ -132,17 +132,10 @@ proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.}
 proc setHead(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.head.store(value, order)
 
-func getAtomicCounter(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
-  chan.atomicCounter.load(order)
-
 proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.atomicCounter.store(value, order)
 
-func decrIsZero(chan: ChannelRaw): bool {.inline.} =
-  if chan.atomicCounter.fetchSub(1, AcqRel) == 0:
-    result = true
-
-func numItems(chan: ChannelRaw): int {.inline.} =
+proc numItems(chan: ChannelRaw): int {.inline.} =
   result = chan.getHead() - chan.getTail()
   if result < 0:
     inc(result, 2 * chan.slots)
@@ -158,11 +151,27 @@ template isEmpty(chan: ChannelRaw): bool =
 # Channels memory ops
 # ------------------------------------------------------------------------------
 
-proc allocChannel(size, n: int): ChannelRaw =
+# malloc by default aligns addresses to 8 bytes (x86) or 16 bytes (x64)
+const MemAlign = 2*sizeof(int)
+
+template `+!`(p: pointer, s: SomeInteger): untyped =
+  cast[typeof(p)](cast[int](p) +% int(s))
+
+template `-!`(p: pointer, s: SomeInteger): untyped =
+  cast[pointer](cast[int](p) -% int(s))
+
+proc allocChannel(size, align, n: int): ChannelRaw =
   result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
 
   # To buffer n items, we allocate for n
-  result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
+  if align <= MemAlign:
+    result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
+  else:
+    # adapted from Nim/lib/system/memalloc.nim
+    let base = c_malloc(csize_t(n*size) + csize_t(align - 1) + csize_t sizeof(uint16))
+    let offset = align - (cast[int](base) and (align - 1))
+    cast[ptr uint16](base +! (offset - sizeof(uint16)))[] = uint16(offset)
+    result.buffer = cast[ptr UncheckedArray[byte]](base +! offset)
 
   initLock(result.lock)
   initCond(result.spaceAvailableCV)
@@ -174,12 +183,16 @@ proc allocChannel(size, n: int): ChannelRaw =
   result.setAtomicCounter(0)
 
 
-proc freeChannel(chan: ChannelRaw) =
+proc freeChannel(chan: ChannelRaw, align: int) =
   if chan.isNil:
     return
 
   if not chan.buffer.isNil:
-    c_free(chan.buffer)
+    if align <= MemAlign:
+      c_free(chan.buffer)
+    else:
+      let offset = cast[ptr uint16](chan.buffer -! sizeof(uint16))[]
+      c_free(chan.buffer -! offset)
 
   deinitLock(chan.lock)
   deinitCond(chan.spaceAvailableCV)
@@ -266,28 +279,31 @@ type
   Chan*[T] = object ## Typed channel
     d: ChannelRaw
 
-proc decr[T](c: Chan[T]) {.inline.} =
+template frees(c) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    if c.d.decrIsZero():
+    if c.d.atomicCounter.fetchSub(1, AcqRel) == 0:
       if c.d.buffer != nil:
-        freeChannel(c.d)
+        freeChannel(c.d, alignof(T))
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
-    c.decr()
+    frees(c)
 else:
   proc `=destroy`*[T](c: var Chan[T]) =
-    c.decr()
+    frees(c)
+
+proc `=dup`*[T](src: Chan[T]): Chan[T] =
+  if src.d != nil:
+    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
+  result.d = src.d
 
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
-    atomicInc(src.d.atomicCounter)
-
-  if dest.d != nil:
-    `=destroy`(dest)
+    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
+  `=destroy`(dest)
   dest.d = src.d
 
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
@@ -365,7 +381,7 @@ proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
   discard channelReceive(c.d, dst.addr, sizeof(T), true)
   result = isolate(dst)
 
-func peek*[T](c: Chan[T]): int {.inline.} =
+proc peek*[T](c: Chan[T]): int {.inline.} =
   ## Returns an estimation of the current number of messages held by the channel.
   numItems(c.d)
 
@@ -376,4 +392,4 @@ proc newChan*[T](elements: Positive = 30): Chan[T] =
   ## `elements` is the capacity of the channel and thus how many messages it can hold 
   ## before it refuses to accept any further messages.
   assert elements >= 1, "Elements must be positive!"
-  result = Chan[T](d: allocChannel(sizeof(T), elements))
+  result = Chan[T](d: allocChannel(sizeof(T), alignof(T), elements))
