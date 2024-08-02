@@ -39,18 +39,20 @@ type
     ## Semaphores are typically used to limit the number of threads than can
     ## access some (physical or logical) resource.
     ##
-    ## Semaphores are of two types: counting and binary. Counting semaphores
-    ## can take non-negative integer values to indicate the number of
-    ## resources available. Binary semaphores can only take the values 0 and 1
-    ## and are used to implement locks.
+    ## Semaphores are of two types: counting semaphores and binary semaphores.
+    ## Counting semaphores can take non-negative integer values to indicate the
+    ## number of units of a particular resource that are available. Binary
+    ## semaphores can only take the values 0 and 1 and are used to implement
+    ## locks.
     c: Cond
     L: Lock
     counter: int
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*(s: Semaphore) {.inline.} =
-    deinitCond(s.c)
-    deinitLock(s.L)
+    let x = addr(s)
+    deinitCond(x.c)
+    deinitLock(x.L)
 else:
   proc `=destroy`*(s: var Semaphore) {.inline.} =
     deinitCond(s.c)

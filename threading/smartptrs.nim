@@ -106,12 +106,12 @@ else:
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
   if src.val != nil:
-    atomicInc(src.val.counter)
+    discard fetchAdd(src.val.counter, 1, Relaxed)
   result.val = src.val
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
   if src.val != nil:
-    atomicInc(src.val.counter)
+    discard fetchAdd(src.val.counter, 1, Relaxed)
   `=destroy`(dest)
   dest.val = src.val
 

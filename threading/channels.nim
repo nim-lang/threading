@@ -132,15 +132,8 @@ proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.}
 proc setHead(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.head.store(value, order)
 
-proc getAtomicCounter(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
-  chan.atomicCounter.load(order)
-
 proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
   chan.atomicCounter.store(value, order)
-
-proc decrIsZero(chan: ChannelRaw): bool {.inline.} =
-  if chan.atomicCounter.fetchSub(1, AcqRel) == 0:
-    result = true
 
 proc numItems(chan: ChannelRaw): int {.inline.} =
   result = chan.getHead() - chan.getTail()
@@ -290,7 +283,7 @@ template frees(c) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    if c.d.decrIsZero():
+    if c.d.atomicCounter.fetchSub(1, AcqRel) == 0:
       if c.d.buffer != nil:
         freeChannel(c.d, alignof(T))
 
