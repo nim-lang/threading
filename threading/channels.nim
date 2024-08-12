@@ -151,27 +151,11 @@ template isEmpty(chan: ChannelRaw): bool =
 # Channels memory ops
 # ------------------------------------------------------------------------------
 
-# malloc by default aligns addresses to 8 bytes (x86) or 16 bytes (x64)
-const MemAlign = 2*sizeof(int)
-
-template `+!`(p: pointer, s: SomeInteger): untyped =
-  cast[typeof(p)](cast[int](p) +% int(s))
-
-template `-!`(p: pointer, s: SomeInteger): untyped =
-  cast[pointer](cast[int](p) -% int(s))
-
-proc allocChannel(size, align, n: int): ChannelRaw =
+proc allocChannel(size, n: int): ChannelRaw =
   result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
 
   # To buffer n items, we allocate for n
-  if align <= MemAlign:
-    result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
-  else:
-    # adapted from Nim/lib/system/memalloc.nim
-    let base = c_malloc(csize_t(n*size) + csize_t(align - 1) + csize_t sizeof(uint16))
-    let offset = align - (cast[int](base) and (align - 1))
-    cast[ptr uint16](base +! (offset - sizeof(uint16)))[] = uint16(offset)
-    result.buffer = cast[ptr UncheckedArray[byte]](base +! offset)
+  result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
 
   initLock(result.lock)
   initCond(result.spaceAvailableCV)
@@ -182,17 +166,12 @@ proc allocChannel(size, align, n: int): ChannelRaw =
   result.setTail(0)
   result.setAtomicCounter(0)
 
-
-proc freeChannel(chan: ChannelRaw, align: int) =
+proc freeChannel(chan: ChannelRaw) =
   if chan.isNil:
     return
 
   if not chan.buffer.isNil:
-    if align <= MemAlign:
-      c_free(chan.buffer)
-    else:
-      let offset = cast[ptr uint16](chan.buffer -! sizeof(uint16))[]
-      c_free(chan.buffer -! offset)
+    c_free(chan.buffer)
 
   deinitLock(chan.lock)
   deinitCond(chan.spaceAvailableCV)
@@ -285,7 +264,7 @@ template frees(c) =
     # so count == 0 means we're the last
     if c.d.atomicCounter.fetchSub(1, AcqRel) == 0:
       if c.d.buffer != nil:
-        freeChannel(c.d, alignof(T))
+        freeChannel(c.d)
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
@@ -392,4 +371,4 @@ proc newChan*[T](elements: Positive = 30): Chan[T] =
   ## `elements` is the capacity of the channel and thus how many messages it can hold 
   ## before it refuses to accept any further messages.
   assert elements >= 1, "Elements must be positive!"
-  result = Chan[T](d: allocChannel(sizeof(T), alignof(T), elements))
+  result = Chan[T](d: allocChannel(sizeof(T), elements))
