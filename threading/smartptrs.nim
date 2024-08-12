@@ -7,7 +7,7 @@
 #    distribution, for details about the copyright.
 
 ## C++11 like smart pointers. They always use the shared allocator.
-import std/isolation, atomics
+import std/isolation, ./atomics
 from typetraits import supportsCopyMem
 
 proc raiseNilAccess() {.noinline.} =
@@ -89,7 +89,7 @@ type
     ## Shared ownership reference counting pointer.
     val: ptr tuple[value: T, counter: Atomic[int]]
 
-proc decr[T](p: SharedPtr[T]) {.inline.} =
+template frees(p) =
   if p.val != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
@@ -99,10 +99,10 @@ proc decr[T](p: SharedPtr[T]) {.inline.} =
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](p: SharedPtr[T]) =
-    p.decr()
+    frees(p)
 else:
   proc `=destroy`*[T](p: var SharedPtr[T]) =
-    p.decr()
+    frees(p)
 
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
   if src.val != nil:
