@@ -122,7 +122,7 @@ proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
   ## Returns a shared pointer which shares
   ## ownership of the object by reference counting.
   result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  result.val.counter.store(0)
+  result.val.counter.store(0, moRelaxed)
   result.val.value = extract val
 
 template newSharedPtr*[T](val: T): SharedPtr[T] =
@@ -135,7 +135,7 @@ proc newSharedPtr*[T](t: typedesc[T]): SharedPtr[T] =
     result.val = cast[typeof(result.val)](allocShared0(sizeof(result.val[])))
   else:
     result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  int(result.val.counter) = 0
+  result.val.counter.store(0, moRelaxed)
 
 proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
   p.val == nil
