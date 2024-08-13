@@ -39,6 +39,8 @@ runnableExamples("--threads:on"):
   loc.atomicInc(1)
   assert loc.load == 6
 
+{.deprecated: "use `std/atomics` instead".}
+
 when not compileOption("threads"):
   {.error: "This module requires --threads:on compilation flag".}
 

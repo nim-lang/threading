@@ -100,8 +100,7 @@ runnableExamples("--threads:on --gc:orc"):
 when not (defined(gcArc) or defined(gcOrc) or defined(gcAtomicArc) or defined(nimdoc)):
   {.error: "This module requires one of --mm:arc / --mm:atomicArc / --mm:orc compilation flags".}
 
-import std/[locks, isolation]
-import ./atomics
+import std/[locks, isolation, atomics]
 import system/ansi_c
 
 # Channel
@@ -120,19 +119,19 @@ type
 
 # ------------------------------------------------------------------------------
 
-proc getTail(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+proc getTail(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
   chan.tail.load(order)
 
-proc getHead(chan: ChannelRaw, order: Ordering = Relaxed): int {.inline.} =
+proc getHead(chan: ChannelRaw, order: MemoryOrder = moRelaxed): int {.inline.} =
   chan.head.load(order)
 
-proc setTail(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+proc setTail(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
   chan.tail.store(value, order)
 
-proc setHead(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+proc setHead(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
   chan.head.store(value, order)
 
-proc setAtomicCounter(chan: ChannelRaw, value: int, order: Ordering = Relaxed) {.inline.} =
+proc setAtomicCounter(chan: ChannelRaw, value: int, order: MemoryOrder = moRelaxed) {.inline.} =
   chan.atomicCounter.store(value, order)
 
 proc numItems(chan: ChannelRaw): int {.inline.} =
@@ -262,9 +261,8 @@ template frees(c) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    if c.d.atomicCounter.fetchSub(1, AcqRel) == 0:
-      if c.d.buffer != nil:
-        freeChannel(c.d)
+    if c.d.atomicCounter.fetchSub(1, moAcquireRelease) == 0:
+      freeChannel(c.d)
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`*[T](c: Chan[T]) =
@@ -273,15 +271,18 @@ else:
   proc `=destroy`*[T](c: var Chan[T]) =
     frees(c)
 
+proc `=wasMoved`*[T](x: var Chan[T]) =
+  x.d = nil
+
 proc `=dup`*[T](src: Chan[T]): Chan[T] =
   if src.d != nil:
-    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
+    discard fetchAdd(src.d.atomicCounter, 1, moRelaxed)
   result.d = src.d
 
 proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   ## Shares `Channel` by reference counting.
   if src.d != nil:
-    discard fetchAdd(src.d.atomicCounter, 1, Relaxed)
+    discard fetchAdd(src.d.atomicCounter, 1, moRelaxed)
   `=destroy`(dest)
   dest.d = src.d
 

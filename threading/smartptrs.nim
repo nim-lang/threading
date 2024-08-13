@@ -7,7 +7,7 @@
 #    distribution, for details about the copyright.
 
 ## C++11 like smart pointers. They always use the shared allocator.
-import std/isolation, ./atomics
+import std/[isolation, atomics]
 from typetraits import supportsCopyMem
 
 proc raiseNilAccess() {.noinline.} =
@@ -93,7 +93,7 @@ template frees(p) =
   if p.val != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    if p.val.counter.fetchSub(1, AcqRel) == 0:
+    if p.val.counter.fetchSub(1, moAcquireRelease) == 0:
       `=destroy`(p.val.value)
       deallocShared(p.val)
 
@@ -104,14 +104,17 @@ else:
   proc `=destroy`*[T](p: var SharedPtr[T]) =
     frees(p)
 
+proc `=wasMoved`*[T](p: var SharedPtr[T]) =
+  p.val = nil
+
 proc `=dup`*[T](src: SharedPtr[T]): SharedPtr[T] =
   if src.val != nil:
-    discard fetchAdd(src.val.counter, 1, Relaxed)
+    discard fetchAdd(src.val.counter, 1, moRelaxed)
   result.val = src.val
 
 proc `=copy`*[T](dest: var SharedPtr[T], src: SharedPtr[T]) =
   if src.val != nil:
-    discard fetchAdd(src.val.counter, 1, Relaxed)
+    discard fetchAdd(src.val.counter, 1, moRelaxed)
   `=destroy`(dest)
   dest.val = src.val
 
@@ -119,7 +122,7 @@ proc newSharedPtr*[T](val: sink Isolated[T]): SharedPtr[T] {.nodestroy.} =
   ## Returns a shared pointer which shares
   ## ownership of the object by reference counting.
   result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  result.val.counter.store(0)
+  result.val.counter.store(0, moRelaxed)
   result.val.value = extract val
 
 template newSharedPtr*[T](val: T): SharedPtr[T] =
@@ -132,7 +135,7 @@ proc newSharedPtr*[T](t: typedesc[T]): SharedPtr[T] =
     result.val = cast[typeof(result.val)](allocShared0(sizeof(result.val[])))
   else:
     result.val = cast[typeof(result.val)](allocShared(sizeof(result.val[])))
-  int(result.val.counter) = 0
+  result.val.counter.store(0, moRelaxed)
 
 proc isNil*[T](p: SharedPtr[T]): bool {.inline.} =
   p.val == nil
