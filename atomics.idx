@@ -1,23 +1,23 @@
 nimTitle	atomics	atomics.html	module threading/atomics		0
-nim	Ordering	atomics.html#Ordering	enum Ordering		46
-nim	Atomic	atomics.html#Atomic	type Atomic		72
-nim	`=copy`	atomics.html#=copy,Atomic[T],Atomic[T]	proc `=copy`[T](dst: var Atomic[T]; src: Atomic[T])		74
-nim	`=sink`	atomics.html#=sink,Atomic[T],Atomic[T]	proc `=sink`[T](dst: var Atomic[T]; src: Atomic[T])		77
-nim	load	atomics.html#load,Atomic[T],Ordering	proc load[T](location: var Atomic[T]; order: Ordering = SeqCst): T		80
-nim	store	atomics.html#store,Atomic[T],T,Ordering	proc store[T](location: var Atomic[T]; desired: T; order: Ordering = SeqCst)		84
-nim	exchange	atomics.html#exchange,Atomic[T],T,Ordering	proc exchange[T](location: var Atomic[T]; desired: T; order: Ordering = SeqCst): T		89
-nim	compareExchange	atomics.html#compareExchange,Atomic[T],T,T,Ordering	proc compareExchange[T](location: var Atomic[T]; expected: var T; desired: T;\n                   order: Ordering = SeqCst): bool		95
-nim	compareExchange	atomics.html#compareExchange,Atomic[T],T,T,Ordering,Ordering	proc compareExchange[T](location: var Atomic[T]; expected: var T; desired: T;\n                   success, failure: Ordering): bool		103
-nim	compareExchangeWeak	atomics.html#compareExchangeWeak,Atomic[T],T,T,Ordering	proc compareExchangeWeak[T](location: var Atomic[T]; expected: var T; desired: T;\n                       order: Ordering = SeqCst): bool		110
-nim	compareExchangeWeak	atomics.html#compareExchangeWeak,Atomic[T],T,T,Ordering,Ordering	proc compareExchangeWeak[T](location: var Atomic[T]; expected: var T; desired: T;\n                       success, failure: Ordering): bool		116
-nim	fetchAdd	atomics.html#fetchAdd,Atomic[T: SomeInteger],T,Ordering	proc fetchAdd[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		125
-nim	fetchSub	atomics.html#fetchSub,Atomic[T: SomeInteger],T,Ordering	proc fetchSub[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		131
-nim	fetchAnd	atomics.html#fetchAnd,Atomic[T: SomeInteger],T,Ordering	proc fetchAnd[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		137
-nim	fetchOr	atomics.html#fetchOr,Atomic[T: SomeInteger],T,Ordering	proc fetchOr[T: SomeInteger](location: var Atomic[T]; value: T;\n                        order: Ordering = SeqCst): T		143
-nim	fetchXor	atomics.html#fetchXor,Atomic[T: SomeInteger],T,Ordering	proc fetchXor[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		149
-nim	atomicInc	atomics.html#atomicInc,Atomic[T: SomeInteger],T	proc atomicInc[T: SomeInteger](location: var Atomic[T]; value: T = 1)		155
-nim	atomicDec	atomics.html#atomicDec,Atomic[T: SomeInteger],T	proc atomicDec[T: SomeInteger](location: var Atomic[T]; value: T = 1)		160
-nim	`+=`	atomics.html#+=,Atomic[T: SomeInteger],T	proc `+=`[T: SomeInteger](location: var Atomic[T]; value: T)		165
-nim	`-=`	atomics.html#-=,Atomic[T: SomeInteger],T	proc `-=`[T: SomeInteger](location: var Atomic[T]; value: T)		169
-nimgrp	compareexchange	atomics.html#compareExchange-procs-all	proc		95
-nimgrp	compareexchangeweak	atomics.html#compareExchangeWeak-procs-all	proc		110
+nim	Ordering	atomics.html#Ordering	enum Ordering		48
+nim	Atomic	atomics.html#Atomic	type Atomic		74
+nim	`=copy`	atomics.html#=copy,Atomic[T],Atomic[T]	proc `=copy`[T](dst: var Atomic[T]; src: Atomic[T])		76
+nim	`=sink`	atomics.html#=sink,Atomic[T],Atomic[T]	proc `=sink`[T](dst: var Atomic[T]; src: Atomic[T])		79
+nim	load	atomics.html#load,Atomic[T],Ordering	proc load[T](location: var Atomic[T]; order: Ordering = SeqCst): T		82
+nim	store	atomics.html#store,Atomic[T],T,Ordering	proc store[T](location: var Atomic[T]; desired: T; order: Ordering = SeqCst)		86
+nim	exchange	atomics.html#exchange,Atomic[T],T,Ordering	proc exchange[T](location: var Atomic[T]; desired: T; order: Ordering = SeqCst): T		91
+nim	compareExchange	atomics.html#compareExchange,Atomic[T],T,T,Ordering	proc compareExchange[T](location: var Atomic[T]; expected: var T; desired: T;\n                   order: Ordering = SeqCst): bool		97
+nim	compareExchange	atomics.html#compareExchange,Atomic[T],T,T,Ordering,Ordering	proc compareExchange[T](location: var Atomic[T]; expected: var T; desired: T;\n                   success, failure: Ordering): bool		105
+nim	compareExchangeWeak	atomics.html#compareExchangeWeak,Atomic[T],T,T,Ordering	proc compareExchangeWeak[T](location: var Atomic[T]; expected: var T; desired: T;\n                       order: Ordering = SeqCst): bool		112
+nim	compareExchangeWeak	atomics.html#compareExchangeWeak,Atomic[T],T,T,Ordering,Ordering	proc compareExchangeWeak[T](location: var Atomic[T]; expected: var T; desired: T;\n                       success, failure: Ordering): bool		118
+nim	fetchAdd	atomics.html#fetchAdd,Atomic[T: SomeInteger],T,Ordering	proc fetchAdd[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		127
+nim	fetchSub	atomics.html#fetchSub,Atomic[T: SomeInteger],T,Ordering	proc fetchSub[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		133
+nim	fetchAnd	atomics.html#fetchAnd,Atomic[T: SomeInteger],T,Ordering	proc fetchAnd[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		139
+nim	fetchOr	atomics.html#fetchOr,Atomic[T: SomeInteger],T,Ordering	proc fetchOr[T: SomeInteger](location: var Atomic[T]; value: T;\n                        order: Ordering = SeqCst): T		145
+nim	fetchXor	atomics.html#fetchXor,Atomic[T: SomeInteger],T,Ordering	proc fetchXor[T: SomeInteger](location: var Atomic[T]; value: T;\n                         order: Ordering = SeqCst): T		151
+nim	atomicInc	atomics.html#atomicInc,Atomic[T: SomeInteger],T	proc atomicInc[T: SomeInteger](location: var Atomic[T]; value: T = 1)		157
+nim	atomicDec	atomics.html#atomicDec,Atomic[T: SomeInteger],T	proc atomicDec[T: SomeInteger](location: var Atomic[T]; value: T = 1)		162
+nim	`+=`	atomics.html#+=,Atomic[T: SomeInteger],T	proc `+=`[T: SomeInteger](location: var Atomic[T]; value: T)		167
+nim	`-=`	atomics.html#-=,Atomic[T: SomeInteger],T	proc `-=`[T: SomeInteger](location: var Atomic[T]; value: T)		171
+nimgrp	compareexchange	atomics.html#compareExchange-procs-all	proc		97
+nimgrp	compareexchangeweak	atomics.html#compareExchangeWeak-procs-all	proc		112

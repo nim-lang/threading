@@ -177,7 +177,10 @@
 <a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L1" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
     <div id="tocRoot"></div>
-    
+    <div class="deprecation-message">
+  <b>Deprecated:</b> use `std/atomics` instead
+</div>
+
     <p class="module-desc">Types and operations for atomic operations and lockless algorithms.
 <p><strong class="examples_text">Example: cmd: --threads:on</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">threading</span><span class="Operator">/</span><span class="Identifier">atomics</span>
@@ -218,8 +221,8 @@
   <dd>
     
     An atomic object with underlying type <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L72" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L72" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L74" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L74" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -243,8 +246,8 @@
   <dd>
     
     Specifies how non-atomic operations can be reordered around atomic operations.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L46" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L46" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L48" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L48" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -260,8 +263,8 @@
   <dd>
     
     Atomically increments the atomic integer by some <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L165" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L165" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L167" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L167" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -273,8 +276,8 @@
   <dd>
     
     Atomically decrements the atomic integer by some <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L169" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L169" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L171" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L171" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -286,8 +289,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L74" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L74" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L76" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L76" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -299,8 +302,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L77" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L77" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L79" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L79" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -312,8 +315,8 @@
   <dd>
     
     Atomically decrements the atomic integer by some <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L160" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L160" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L162" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L162" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -325,8 +328,8 @@
   <dd>
     
     Atomically increments the atomic integer by some <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L155" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L155" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L157" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L157" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -339,8 +342,8 @@
   <dd>
     
     Atomically compares the value of the atomic object with the <tt class="docutils literal"><span class="pre"><span class="Identifier">expected</span></span></tt> value and performs exchange with the <tt class="docutils literal"><span class="pre"><span class="Identifier">desired</span></span></tt> one if equal or load if not. Returns true if the exchange was successful.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L95" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L95" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L97" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L97" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -350,8 +353,8 @@
   <dd>
     
     Same as above, but allows for different memory orders for success and failure.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L103" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L103" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L105" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L105" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -364,8 +367,8 @@
   <dd>
     
     Same as above, but is allowed to fail spuriously.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L110" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L110" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L112" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L112" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -375,8 +378,8 @@
   <dd>
     
     Same as above, but allows for different memory orders for success and failure.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L116" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L116" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L118" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L118" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -388,8 +391,8 @@
   <dd>
     
     Atomically replaces the value of the atomic object with the <tt class="docutils literal"><span class="pre"><span class="Identifier">desired</span></span></tt> value and returns the old value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L89" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L89" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L91" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L91" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -402,8 +405,8 @@
   <dd>
     
     Atomically adds a <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt> to the atomic integer and returns the original value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L125" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L125" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L127" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L127" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -416,8 +419,8 @@
   <dd>
     
     Atomically replaces the atomic integer with it's bitwise AND with the specified <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt> and returns the original value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L137" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L137" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L139" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L139" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -430,8 +433,8 @@
   <dd>
     
     Atomically replaces the atomic integer with it's bitwise OR with the specified <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt> and returns the original value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L143" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L143" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L145" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L145" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -444,8 +447,8 @@
   <dd>
     
     Atomically subtracts a <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt> to the atomic integer and returns the original value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L131" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L131" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L133" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L133" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -458,8 +461,8 @@
   <dd>
     
     Atomically replaces the atomic integer with it's bitwise XOR with the specified <tt class="docutils literal"><span class="pre"><span class="Identifier">value</span></span></tt> and returns the original value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L149" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L149" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L151" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L151" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -471,8 +474,8 @@
   <dd>
     
     Atomically obtains the value of the atomic object.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L80" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L80" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L82" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L82" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -484,8 +487,8 @@
   <dd>
     
     Atomically replaces the value of the atomic object with the <tt class="docutils literal"><span class="pre"><span class="Identifier">desired</span></span></tt> value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L84" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L84" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/atomics.nim#L86" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/atomics.nim#L86" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -501,7 +504,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-12 19:16:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-13 03:11:32 UTC</small>
       </div>
     </div>
   </div>
