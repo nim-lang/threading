@@ -2,7 +2,7 @@
 ## https://github.com/nim-lang/threading/pull/27#issue-1652851878
 ## Also tests `trySend` and `tryRecv` templates.
 
-import threading/channels
+import threading/channels, std/os
 const Message = "Hello"
 
 block trySend_recv:
@@ -23,6 +23,7 @@ block trySend_recv:
   var dest: string
 
   createThread(thread, test, chan)
+  sleep 1
   # Receive the dummy message to make room for the real message
   discard chan.recv()
 
