@@ -10,7 +10,7 @@ block trySend_recv:
 
   proc test(chan: Chan[string]) {.thread.} =
     var notSent = true
-    var msg = Message
+    let msg = Message
     while notSent:
       notSent = not chan.trySend(msg)
       if notSent:
@@ -19,14 +19,15 @@ block trySend_recv:
   var chan = newChan[string](elements = 1)
   # Fill the channel before spawning the thread
   chan.send("Dummy message")
-  var thread: Thread[Chan[string]]
-  var dest: string
 
+  var thread: Thread[Chan[string]]
   createThread(thread, test, chan)
-  sleep 1
+  sleep 10
+
   # Receive the dummy message to make room for the real message
   discard chan.recv()
 
+  var dest: string
   chan.recv(dest)
   doAssert dest == Message
 
@@ -47,11 +48,12 @@ block send_tryRecv:
     doAssert msg == Message
 
   var chan = newChan[string](elements = 1)
-  var thread: Thread[Chan[string]]
-  let src = Message
 
+  var thread: Thread[Chan[string]]
   createThread(thread, test, chan)
-  sleep 1
+  sleep 10
+
+  let src = Message
   chan.send(src)
 
   thread.joinThread()
