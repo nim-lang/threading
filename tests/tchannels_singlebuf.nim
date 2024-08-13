@@ -51,6 +51,7 @@ block send_tryRecv:
   let src = Message
 
   createThread(thread, test, chan)
+  sleep 1
   chan.send(src)
 
   thread.joinThread()
