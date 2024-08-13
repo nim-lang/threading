@@ -307,6 +307,7 @@ proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
 
 template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
+  mixin isolate
   trySend(c, isolate(src))
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
@@ -338,6 +339,7 @@ proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
 
 template send*[T](c: Chan[T]; src: T) =
   ## Helper template for `send`.
+  mixin isolate
   send(c, isolate(src))
 
 proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
