@@ -6,29 +6,43 @@ import threading/channels
 const Message = "Hello"
 
 block trySend_recv:
+  var attempts = 0
+
   proc test(chan: ptr Chan[string]) {.thread.} =
     var notSent = true
     var msg = Message
     while notSent:
       notSent = not chan[].trySend(msg)
+      if notSent:
+        atomicInc(attempts)
 
   var chan = newChan[string](elements = 1)
+  # Fill the channel before spawning the thread
+  chan.send("Dummy message")
   var thread: Thread[ptr Chan[string]]
   var dest: string
 
   createThread(thread, test, chan.addr)
+  # Receive the dummy message to make room for the real message
+  discard chan.recv()
+
   chan.recv(dest)
   doAssert dest == Message
 
   thread.joinThread()
+  doAssert attempts > 0, "trySend should have been attempted multiple times"
 
 
 block send_tryRecv:
+  var attempts = 0
+
   proc test(chan: ptr Chan[string]) {.thread.} =
     var notReceived = true
     var msg: string
     while notReceived:
       notReceived = not chan[].tryRecv(msg)
+      if notReceived:
+        atomicInc(attempts)
     doAssert msg == Message
 
   var chan = newChan[string](elements = 1)
@@ -39,3 +53,4 @@ block send_tryRecv:
   chan.send(src)
 
   thread.joinThread()
+  doAssert attempts > 0, "tryRecv should have been attempted multiple times"
