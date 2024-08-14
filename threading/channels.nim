@@ -294,11 +294,6 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## The memory of `src` is moved, not copied. 
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
-  ## 
-  ## .. warning:: Blocking is still possible if another thread uses the blocking
-  ##    version of the `send proc`_ / `recv proc`_ and waits for the 
-  ##    data/space to appear in the channel, thus holding the internal lock to 
-  ##    channel's buffer.
   ##
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
@@ -321,10 +316,6 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## 
   ## Doesn't block waiting for messages in the channel to become available.
   ## Instead returns after an attempt to receive a message was made.
-  ## 
-  ## .. warning:: Blocking is still possible if another thread uses the blocking
-  ##    version of the `send proc`_ / `recv proc`_ and waits for the data/space to 
-  ##    appear in the channel, thus holding the internal lock to channel's buffer.
   ## 
   ## Returns `false` and does not change `dist` if no message was received.
   channelReceive(c.d, dst.addr, sizeof(T), false)
