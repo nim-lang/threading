@@ -286,7 +286,7 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   `=destroy`(dest)
   dest.d = src.d
 
-proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
+proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Tries to send the message `src` to the channel `c`.
   ##
   ## The memory of `src` is moved, not copied. 
@@ -308,8 +308,7 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
 template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
   mixin isolate
-  var p = isolate(src)
-  trySend(c, p)
+  trySend(c, isolate(src))
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Tries to receive a message from the channel `c` and fill `dst` with its value.
