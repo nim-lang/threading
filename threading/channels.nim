@@ -301,7 +301,7 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
   var data = src.extract
-  result = channelSend(c.d, data.unsafeAddr, sizeof(T), false)
+  result = channelSend(c.d, data.addr, sizeof(T), false)
   if result:
     wasMoved(data)
 
@@ -335,7 +335,7 @@ proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   var data = src.extract
   when defined(gcOrc) and defined(nimSafeOrcSend):
     GC_runOrc()
-  discard channelSend(c.d, data.unsafeAddr, sizeof(T), true)
+  discard channelSend(c.d, data.addr, sizeof(T), true)
   wasMoved(data)
 
 template send*[T](c: Chan[T]; src: T) =
