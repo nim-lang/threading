@@ -328,11 +328,10 @@ proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   ## 
   ## If the channel is already full with messages this will block the thread until
   ## messages from the channel are removed.
-  var data = src.extract
   when defined(gcOrc) and defined(nimSafeOrcSend):
     GC_runOrc()
-  discard channelSend(c.d, data.addr, sizeof(T), true)
-  wasMoved(data)
+  discard channelSend(c.d, src.addr, sizeof(T), true)
+  wasMoved(src)
 
 template send*[T](c: Chan[T]; src: T) =
   ## Helper template for `send`.
