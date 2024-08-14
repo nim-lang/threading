@@ -306,6 +306,10 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
 
 template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
+  ##
+  ## .. warning:: This template creates a new copy of `src` on each call.
+  ##    For repeated sends of the same value, consider using the `trySend`
+  ##    proc with a pre-isolated value to avoid unnecessary copying.
   mixin isolate
   var p = isolate(src)
   trySend(c, p)
