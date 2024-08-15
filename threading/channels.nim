@@ -291,7 +291,7 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
 proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Tries to send the message `src` to the channel `c`.
   ##
-  ## The memory of `src` is copied.
+  ## The memory of `src` be moved if possible.
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
@@ -316,7 +316,7 @@ template trySend*[T](c: Chan[T], src: T): bool =
 proc trySendMut*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Tries to send the message `src` to the channel `c`.
   ##
-  ## The memory of `src` is moved, not copied.
+  ## The memory of `src` is moved directly.
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
