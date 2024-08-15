@@ -187,9 +187,8 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
 
   when not blocking:
     if chan.isFull(): return false
-    if not tryAcquire(chan.lock): return false
-  else:
-    acquire(chan.lock)
+
+  acquire(chan.lock)
 
   # check for when another thread was faster to fill
   when blocking:
@@ -222,9 +221,8 @@ proc channelReceive(chan: ChannelRaw, data: pointer, size: int, blocking: static
 
   when not blocking:
     if chan.isEmpty(): return false
-    if not tryAcquire(chan.lock): return false
-  else:
-    acquire(chan.lock)
+
+  acquire(chan.lock)
 
   # check for when another thread was faster to empty
   when blocking:
