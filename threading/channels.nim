@@ -187,8 +187,9 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
 
   when not blocking:
     if chan.isFull(): return false
-
-  acquire(chan.lock)
+    if not tryAcquire(chan.lock): return false
+  else:
+    acquire(chan.lock)
 
   # check for when another thread was faster to fill
   when blocking:
@@ -221,8 +222,9 @@ proc channelReceive(chan: ChannelRaw, data: pointer, size: int, blocking: static
 
   when not blocking:
     if chan.isEmpty(): return false
-
-  acquire(chan.lock)
+    if not tryAcquire(chan.lock): return false
+  else:
+    acquire(chan.lock)
 
   # check for when another thread was faster to empty
   when blocking:
@@ -293,6 +295,10 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
+  ## .. warning:: In high-concurrency situations, consider using an exponential
+  ##    backoff strategy to reduce contention and improve the success rate of
+  ##    operations.
+  ##
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
   result = channelSend(c.d, src.addr, sizeof(T), false)
@@ -315,6 +321,10 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Doesn't block waiting for messages in the channel to become available.
   ## Instead returns after an attempt to receive a message was made.
   ## 
+  ## .. warning:: In high-concurrency situations, consider using an exponential
+  ##    backoff strategy to reduce contention and improve the success rate of
+  ##    operations.
+  ##
   ## Returns `false` and does not change `dist` if no message was received.
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
