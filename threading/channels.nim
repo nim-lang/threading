@@ -288,10 +288,10 @@ proc `=copy`*[T](dest: var Chan[T], src: Chan[T]) =
   `=destroy`(dest)
   dest.d = src.d
 
-proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
+proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Tries to send the message `src` to the channel `c`.
   ##
-  ## The memory of `src` is moved, not copied. 
+  ## The memory of `src` is copied.
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
@@ -308,12 +308,27 @@ proc trySend*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
 template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
   ##
-  ## .. warning:: This template creates a new copy of `src` on each call.
-  ##    For repeated sends of the same value, consider using the `trySend`
-  ##    proc with a pre-isolated value to avoid unnecessary copying.
+  ## .. warning:: For repeated sends of the same value, consider using the
+  ## `trySendMut` proc with a pre-isolated value to avoid unnecessary copying.
   mixin isolate
-  var p = isolate(src)
-  trySend(c, p)
+  trySend(c, isolate(src))
+
+proc trySendMut*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
+  ## Tries to send the message `src` to the channel `c`.
+  ##
+  ## The memory of `src` is moved, not copied.
+  ## Doesn't block waiting for space in the channel to become available.
+  ## Instead returns after an attempt to send a message was made.
+  ##
+  ## .. warning:: In high-concurrency situations, consider using an exponential
+  ##    backoff strategy to reduce contention and improve the success rate of
+  ##    operations.
+  ##
+  ## Returns `false` if the message was not sent because the number of pending
+  ## messages in the channel exceeded its capacity.
+  result = channelSend(c.d, src.addr, sizeof(T), false)
+  if result:
+    wasMoved(src)
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Tries to receive a message from the channel `c` and fill `dst` with its value.
