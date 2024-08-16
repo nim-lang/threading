@@ -317,7 +317,9 @@ template trySend*[T](c: Chan[T], src: T): bool =
 proc tryTake*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Tries to send the message `src` to the channel `c`.
   ##
-  ## The memory of `src` is moved directly.
+  ## The memory of `src` is moved directly. Be careful not to reuse `src` afterwards.
+  ## This proc is suitable when `src` cannot be copied.
+  ##
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
