@@ -293,9 +293,6 @@ proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
-  ## .. warning:: Blocking may occur if another thread holds the internal lock on
-  ##    the channel's buffer, causing the thread to wait until the lock is released.
-  ##
   ## .. warning:: In high-concurrency situations, consider using an exponential
   ##    backoff strategy to reduce contention and improve the success rate of
   ##    operations.
@@ -323,9 +320,6 @@ proc tryTake*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ## Doesn't block waiting for space in the channel to become available.
   ## Instead returns after an attempt to send a message was made.
   ##
-  ## .. warning:: Blocking may occur if another thread holds the internal lock on
-  ##    the channel's buffer, causing the thread to wait until the lock is released.
-  ##
   ## .. warning:: In high-concurrency situations, consider using an exponential
   ##    backoff strategy to reduce contention and improve the success rate of
   ##    operations.
@@ -342,9 +336,6 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Doesn't block waiting for messages in the channel to become available.
   ## Instead returns after an attempt to receive a message was made.
   ##
-  ## .. warning:: Blocking may occur if another thread holds the internal lock on
-  ##    the channel's buffer, causing the thread to wait until the lock is released.
-  ## 
   ## .. warning:: In high-concurrency situations, consider using an exponential
   ##    backoff strategy to reduce contention and improve the success rate of
   ##    operations.
