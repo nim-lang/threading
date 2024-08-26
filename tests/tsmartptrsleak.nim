@@ -1,7 +1,7 @@
 import threading/smartptrs
 import std/isolation
 import std/locks
-import threading/atomics
+import std/atomics
 import threading/channels
 
 var
@@ -12,10 +12,10 @@ type
 
 when defined(nimAllowNonVarDestructor):
   proc `=destroy`(obj: TestObj) =
-    discard freeCounts.fetchAdd(1, Release)
+    discard freeCounts.fetchAdd(1, moRelease)
 else:
   proc `=destroy`(obj: var TestObj) =
-    discard freeCounts.fetchAdd(1, Release)
+    discard freeCounts.fetchAdd(1, moRelease)
 
 var
   thr: array[0..1, Thread[void]]
@@ -50,6 +50,6 @@ createThread(thr[0], threadA)
 createThread(thr[1], threadB)
 joinThreads(thr)
 
-echo "freeCounts: got: ", $int(freeCounts), " expected: ", N
+echo "freeCounts: got: ", load(freeCounts, moRelaxed), " expected: ", N
 echo ""
-assert freeCounts.load(Acquire) == N
+assert freeCounts.load(moRelaxed) == N
