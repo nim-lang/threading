@@ -307,7 +307,7 @@ template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
   ##
   ## .. warning:: For repeated sends of the same value, consider using the
-  ##    `tryTake <#tryTake,Chan[T],varIsolated[T]>`_ proc with a pre-isolated
+  ##    `tryTake <#tryTake,Chan[T],Isolated[T]>`_ proc with a pre-isolated
   ##    value to avoid unnecessary copying.
   mixin isolate
   trySend(c, isolate(src))
