@@ -374,14 +374,12 @@ proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
 proc recv*[T](c: Chan[T]): T {.inline.} =
   ## Receives a message from the channel.
   ## A version of `recv`_ that returns the message.
-  discard channelReceive(c.d, result.addr, sizeof(result), true)
+  discard channelReceive(c.d, result.addr, sizeof(T), true)
 
 proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
   ## Receives a message from the channel.
   ## A version of `recv`_ that returns the message and isolates it.
-  var dst: T
-  discard channelReceive(c.d, dst.addr, sizeof(T), true)
-  result = isolate(dst)
+  discard channelReceive(c.d, result.addr, sizeof(T), true)
 
 proc peek*[T](c: Chan[T]): int {.inline.} =
   ## Returns an estimation of the current number of messages held by the channel.
