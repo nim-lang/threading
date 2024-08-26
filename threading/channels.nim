@@ -28,9 +28,9 @@
 ## the underlying resources and synchronization. It has to be initialized using
 ## the `newChan` proc. Sending and receiving operations are provided by the
 ## blocking `send` and `recv` procs, and non-blocking `trySend` and `tryRecv`
-## procs. Send operations add messages to the channel, receiving operations 
+## procs. Send operations add messages to the channel, receiving operations
 ## remove them.
-## 
+##
 ## See also:
 ## * [std/isolation](https://nim-lang.org/docs/isolation.html)
 ##
@@ -307,7 +307,8 @@ template trySend*[T](c: Chan[T], src: T): bool =
   ## Helper template for `trySend <#trySend,Chan[T],sinkIsolated[T]>`_.
   ##
   ## .. warning:: For repeated sends of the same value, consider using the
-  ## `trySendMut` proc with a pre-isolated value to avoid unnecessary copying.
+  ##    `tryTake <#tryTake,Chan[T],varIsolated[T]>`_ proc with a pre-isolated
+  ##    value to avoid unnecessary copying.
   mixin isolate
   trySend(c, isolate(src))
 
@@ -332,7 +333,7 @@ proc tryTake*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
 
 proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ## Tries to receive a message from the channel `c` and fill `dst` with its value.
-  ## 
+  ##
   ## Doesn't block waiting for messages in the channel to become available.
   ## Instead returns after an attempt to receive a message was made.
   ##
@@ -344,11 +345,11 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
-  ## Sends the message `src` to the channel `c`. 
+  ## Sends the message `src` to the channel `c`.
   ## This blocks the sending thread until `src` was successfully sent.
-  ## 
-  ## The memory of `src` is moved, not copied. 
-  ## 
+  ##
+  ## The memory of `src` is moved, not copied.
+  ##
   ## If the channel is already full with messages this will block the thread until
   ## messages from the channel are removed.
   when defined(gcOrc) and defined(nimSafeOrcSend):
@@ -362,16 +363,16 @@ template send*[T](c: Chan[T]; src: T) =
   send(c, isolate(src))
 
 proc recv*[T](c: Chan[T], dst: var T) {.inline.} =
-  ## Receives a message from the channel `c` and fill `dst` with its value. 
-  ## 
+  ## Receives a message from the channel `c` and fill `dst` with its value.
+  ##
   ## This blocks the receiving thread until a message was successfully received.
-  ## 
+  ##
   ## If the channel does not contain any messages this will block the thread until
   ## a message get sent to the channel.
   discard channelReceive(c.d, dst.addr, sizeof(T), true)
 
 proc recv*[T](c: Chan[T]): T {.inline.} =
-  ## Receives a message from the channel. 
+  ## Receives a message from the channel.
   ## A version of `recv`_ that returns the message.
   discard channelReceive(c.d, result.addr, sizeof(result), true)
 
@@ -388,9 +389,8 @@ proc peek*[T](c: Chan[T]): int {.inline.} =
 
 proc newChan*[T](elements: Positive = 30): Chan[T] =
   ## An initialization procedure, necessary for acquiring resources and
-  ## initializing internal state of the channel. 
-  ## 
-  ## `elements` is the capacity of the channel and thus how many messages it can hold 
+  ## initializing internal state of the channel.
+  ##
+  ## `elements` is the capacity of the channel and thus how many messages it can hold
   ## before it refuses to accept any further messages.
-  assert elements >= 1, "Elements must be positive!"
   result = Chan[T](d: allocChannel(sizeof(T), elements))
