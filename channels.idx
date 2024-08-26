@@ -13,6 +13,6 @@ nim	send	channels.html#send.t,Chan[T],T	template send[T](c: Chan[T]; src: T)		36
 nim	recv	channels.html#recv,Chan[T],T	proc recv[T](c: Chan[T]; dst: var T)		365
 nim	recv	channels.html#recv,Chan[T]	proc recv[T](c: Chan[T]): T		374
 nim	recvIso	channels.html#recvIso,Chan[T]	proc recvIso[T](c: Chan[T]): Isolated[T]		379
-nim	peek	channels.html#peek,Chan[T]	proc peek[T](c: Chan[T]): int		386
-nim	newChan	channels.html#newChan,Positive	proc newChan[T](elements: Positive = 30): Chan[T]		390
+nim	peek	channels.html#peek,Chan[T]	proc peek[T](c: Chan[T]): int		384
+nim	newChan	channels.html#newChan,Positive	proc newChan[T](elements: Positive = 30): Chan[T]		388
 nimgrp	recv	channels.html#recv-procs-all	proc		365

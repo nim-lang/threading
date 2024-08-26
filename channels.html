@@ -291,8 +291,8 @@ This module is experimental and its interface may change.</div>
     <p>An initialization procedure, necessary for acquiring resources and initializing internal state of the channel.</p>
 <p><tt class="docutils literal"><span class="pre"><span class="Identifier">elements</span></span></tt> is the capacity of the channel and thus how many messages it can hold before it refuses to accept any further messages.</p>
 
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L390" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L390" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L388" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L388" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -304,8 +304,8 @@ This module is experimental and its interface may change.</div>
   <dd>
     
     Returns an estimation of the current number of messages held by the channel.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L386" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L386" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L384" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L384" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -446,7 +446,7 @@ In high-concurrency situations, consider using an exponential backoff strategy t
   <dd>
     
     Helper template for <a class="reference external" href="#trySend,Chan[T],sinkIsolated[T]">trySend</a>.<div class="admonition admonition-warning"><span class="admonition-warning-text"><b>Warning:</b></span>
-For repeated sends of the same value, consider using the <a class="reference external" href="#tryTake,Chan[T],varIsolated[T]">tryTake</a> proc with a pre-isolated value to avoid unnecessary copying.</div>
+For repeated sends of the same value, consider using the <a class="reference external" href="#tryTake,Chan[T],Isolated[T]">tryTake</a> proc with a pre-isolated value to avoid unnecessary copying.</div>
 
     <a href="https://github.com/nim-lang/threading/tree/master/threading/channels.nim#L306" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
 <a href="https://github.com/nim-lang/threading/edit/devel/threading/channels.nim#L306" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
@@ -465,7 +465,7 @@ For repeated sends of the same value, consider using the <a class="reference ext
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-26 18:36:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-26 21:06:18 UTC</small>
       </div>
     </div>
   </div>
