@@ -101,7 +101,6 @@ when not (defined(gcArc) or defined(gcOrc) or defined(gcAtomicArc) or defined(ni
   {.error: "This module requires one of --mm:arc / --mm:atomicArc / --mm:orc compilation flags".}
 
 import std/[locks, isolation, atomics]
-import system/ansi_c
 
 # Channel
 # ------------------------------------------------------------------------------
@@ -151,10 +150,10 @@ template isEmpty(chan: ChannelRaw): bool =
 # ------------------------------------------------------------------------------
 
 proc allocChannel(size, n: int): ChannelRaw =
-  result = cast[ChannelRaw](c_malloc(csize_t sizeof(ChannelObj)))
+  result = cast[ChannelRaw](allocShared(sizeof(ChannelObj)))
 
   # To buffer n items, we allocate for n
-  result.buffer = cast[ptr UncheckedArray[byte]](c_malloc(csize_t n*size))
+  result.buffer = cast[ptr UncheckedArray[byte]](allocShared(n*size))
 
   initLock(result.lock)
   initCond(result.spaceAvailableCV)
@@ -170,13 +169,13 @@ proc freeChannel(chan: ChannelRaw) =
     return
 
   if not chan.buffer.isNil:
-    c_free(chan.buffer)
+    deallocShared(chan.buffer)
 
   deinitLock(chan.lock)
   deinitCond(chan.spaceAvailableCV)
   deinitCond(chan.dataAvailableCV)
 
-  c_free(chan)
+  deallocShared(chan)
 
 # MPMC Channels (Multi-Producer Multi-Consumer)
 # ------------------------------------------------------------------------------
