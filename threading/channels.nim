@@ -100,7 +100,7 @@ runnableExamples("--threads:on --gc:orc"):
 when not (defined(gcArc) or defined(gcOrc) or defined(gcAtomicArc) or defined(nimdoc)):
   {.error: "This module requires one of --mm:arc / --mm:atomicArc / --mm:orc compilation flags".}
 
-import std/[locks, isolation, atomics]
+import std/[locks, isolation, atomics, options]
 
 # Channel
 # ------------------------------------------------------------------------------
@@ -256,10 +256,15 @@ type
   Chan*[T] = object ## Typed channel
     d: ChannelRaw
 
+proc tryRecv*[T](c: Chan[T]): Option[T] {.inline, raises: [].}
+
 template frees(c) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
+    while true:
+      if c.tryRecv().isNone:
+        break
     if c.d.atomicCounter.fetchSub(1, moAcquireRelease) == 0:
       freeChannel(c.d)
 
@@ -342,6 +347,22 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ##
   ## Returns `false` and does not change `dist` if no message was received.
   channelReceive(c.d, dst.addr, sizeof(T), false)
+
+proc tryRecv*[T](c: Chan[T]): Option[T] {.inline.} =
+  ## Tries to receive a message from the channel `c`.
+  ##
+  ## Doesn't block waiting for messages in the channel to become available.
+  ## Instead returns after an attempt to receive a message was made.
+  ##
+  ## .. warning:: In high-concurrency situations, consider using an exponential
+  ##    backoff strategy to reduce contention and improve the success rate of
+  ##    operations.
+  var dst: T
+  let dataAvailable = tryRecv(c, dst)
+  if dataAvailable:
+    result = some(dst)
+  else:
+    result = none(T)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T]) {.inline.} =
   ## Sends the message `src` to the channel `c`.
