@@ -262,11 +262,11 @@ template frees[T](c: Chan[T]) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
-    while true:
-      var msg: T
-      if not c.tryRecv(msg):
-        break
     if c.d.atomicCounter.fetchSub(1, moAcquireRelease) == 0:
+      while true:
+        var msg: T
+        if not c.tryRecv(msg):
+          break
       freeChannel(c.d)
 
 when defined(nimAllowNonVarDestructor):
