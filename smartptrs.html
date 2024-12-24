@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.1.99">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.3.1">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.1.99"></script>
+<script type="text/javascript" src="dochack.js?v=2.3.1"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -109,6 +109,10 @@
 <li><a class="reference" href="#isNil%2CUniquePtr%5BT%5D" title="isNil[T](p: UniquePtr[T]): bool">isNil[T](p: UniquePtr[T]): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">isUniqueRef
+  <li><a class="reference" href="#isUniqueRef%2CSharedPtr%5BT%5D" title="isUniqueRef[T](p: SharedPtr[T]): bool">isUniqueRef[T](p: SharedPtr[T]): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">newConstPtr
   <li><a class="reference" href="#newConstPtr%2CsinkIsolated%5BT%5D" title="newConstPtr[T](val: sink Isolated[T]): ConstPtr[T]">newConstPtr[T](val: sink Isolated[T]): ConstPtr[T]</a></li>
 
@@ -171,8 +175,8 @@
   <dd>
     
     Distinct version of <tt class="docutils literal"><span class="pre"><span class="Identifier">SharedPtr</span><span class="Punctuation">[</span><span class="Identifier">T</span><span class="Punctuation">]</span></span></tt>, which doesn't allow mutating the underlying value.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L161" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L161" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L167" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L167" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -208,8 +212,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L181" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L181" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L187" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L187" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -218,8 +222,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L154" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L154" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L160" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L160" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -323,8 +327,8 @@
   <dd>
     
     Returns an immutable view of the internal value of <tt class="docutils literal"><span class="pre"><span class="Identifier">p</span></span></tt>.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L174" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L174" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L180" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L180" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -356,8 +360,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L179" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L179" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L185" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L185" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -389,8 +393,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L171" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L171" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L177" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L177" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -416,14 +420,27 @@
 </div>
 
 </div>
+<div id="isUniqueRef-procs-all">
+  <div id="isUniqueRef,SharedPtr[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isUniqueRef%2CSharedPtr%5BT%5D"><span class="Identifier">isUniqueRef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dd>
+    
+    
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L154" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L154" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
 <div id="newConstPtr-procs-all">
   <div id="newConstPtr,sinkIsolated[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#newConstPtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span><span class="Other">,</span> <span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     Similar to <a class="reference external" href="#newSharedPtr,T">newSharedPtr</a>, but the underlying value can't be mutated.
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L164" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L164" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L170" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L170" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -510,8 +527,8 @@
   <dd>
     
     
-    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L168" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L168" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/nim-lang/threading/tree/master/threading/smartptrs.nim#L174" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/nim-lang/threading/edit/devel/threading/smartptrs.nim#L174" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -553,7 +570,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-28 06:39:19 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-24 05:42:27 UTC</small>
       </div>
     </div>
   </div>

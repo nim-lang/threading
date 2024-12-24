@@ -23,14 +23,15 @@ nim	isNil	smartptrs.html#isNil,SharedPtr[T]	proc isNil[T](p: SharedPtr[T]): bool
 nim	`[]`	smartptrs.html#[],SharedPtr[T]	proc `[]`[T](p: SharedPtr[T]): var T		143
 nim	`[]=`	smartptrs.html#[]=,SharedPtr[T],sinkIsolated[T]	proc `[]=`[T](p: SharedPtr[T]; val: sink Isolated[T])		147
 nim	`[]=`	smartptrs.html#[]=.t,SharedPtr[T],T	template `[]=`[T](p: SharedPtr[T]; val: T)		151
-nim	`$`	smartptrs.html#$,SharedPtr[T]	proc `$`[T](p: SharedPtr[T]): string		154
-nim	ConstPtr	smartptrs.html#ConstPtr	type ConstPtr		161
-nim	newConstPtr	smartptrs.html#newConstPtr,sinkIsolated[T]	proc newConstPtr[T](val: sink Isolated[T]): ConstPtr[T]		164
-nim	newConstPtr	smartptrs.html#newConstPtr.t,T	template newConstPtr[T](val: T): ConstPtr[T]		168
-nim	isNil	smartptrs.html#isNil,ConstPtr[T]	proc isNil[T](p: ConstPtr[T]): bool		171
-nim	`[]`	smartptrs.html#[],ConstPtr[T]	proc `[]`[T](p: ConstPtr[T]): lent T		174
-nim	`[]=`	smartptrs.html#[]=,ConstPtr[T],T	proc `[]=`[T](p: ConstPtr[T]; v: T)		179
-nim	`$`	smartptrs.html#$,ConstPtr[T]	proc `$`[T](p: ConstPtr[T]): string		181
+nim	isUniqueRef	smartptrs.html#isUniqueRef,SharedPtr[T]	proc isUniqueRef[T](p: SharedPtr[T]): bool		154
+nim	`$`	smartptrs.html#$,SharedPtr[T]	proc `$`[T](p: SharedPtr[T]): string		160
+nim	ConstPtr	smartptrs.html#ConstPtr	type ConstPtr		167
+nim	newConstPtr	smartptrs.html#newConstPtr,sinkIsolated[T]	proc newConstPtr[T](val: sink Isolated[T]): ConstPtr[T]		170
+nim	newConstPtr	smartptrs.html#newConstPtr.t,T	template newConstPtr[T](val: T): ConstPtr[T]		174
+nim	isNil	smartptrs.html#isNil,ConstPtr[T]	proc isNil[T](p: ConstPtr[T]): bool		177
+nim	`[]`	smartptrs.html#[],ConstPtr[T]	proc `[]`[T](p: ConstPtr[T]): lent T		180
+nim	`[]=`	smartptrs.html#[]=,ConstPtr[T],T	proc `[]=`[T](p: ConstPtr[T]; v: T)		185
+nim	`$`	smartptrs.html#$,ConstPtr[T]	proc `$`[T](p: ConstPtr[T]): string		187
 nimgrp	=dup	smartptrs.html#=dup-procs-all	proc		38
 nimgrp	$	smartptrs.html#$-procs-all	proc		81
 nimgrp	=destroy	smartptrs.html#=destroy-procs-all	proc		28
