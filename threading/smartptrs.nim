@@ -151,6 +151,12 @@ proc `[]=`*[T](p: SharedPtr[T], val: sink Isolated[T]) {.inline.} =
 template `[]=`*[T](p: SharedPtr[T]; val: T) =
   `[]=`(p, isolate(val))
 
+proc isUniqueRef*[T](p: SharedPtr[T]): bool =
+  if p.val == nil:
+    return true
+  p.val.counter.load(moAcquireRelease) == 0
+  
+
 proc `$`*[T](p: SharedPtr[T]): string {.inline.} =
   if p.val == nil: "nil"
   else: "(val: " & $p.val.value & ")"
