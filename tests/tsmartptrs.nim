@@ -41,16 +41,16 @@ block:
   doAssert not a3.isNil
   doAssert a3[] == 0
 
-  doAssert a1.isUniqueRef() == true
+  doAssert a1.isUniqueRef()
   a1 = newSharedPtr(int)
   a1[] = 1
   doAssert a1[] == 1
   var a4 = newSharedPtr(string)
   a4[] = "hello world"
   doAssert a4[] == "hello world"
-  doAssert a4.isUniqueRef() == true
+  doAssert a4.isUniqueRef()
   var a4p = a4
-  doAssert a4.isUniqueRef() == false
+  doAssert(not a4.isUniqueRef())
 
 block:
   var a1: ConstPtr[float]
