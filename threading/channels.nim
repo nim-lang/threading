@@ -256,11 +256,17 @@ type
   Chan*[T] = object ## Typed channel
     d: ChannelRaw
 
-template frees(c) =
+proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline, raises: [].}
+
+template frees[T](c: Chan[T]) =
   if c.d != nil:
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
     if c.d.atomicCounter.fetchSub(1, moAcquireRelease) == 0:
+      while true:
+        var msg: T
+        if not c.tryRecv(msg):
+          break
       freeChannel(c.d)
 
 when defined(nimAllowNonVarDestructor):
