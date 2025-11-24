@@ -73,7 +73,7 @@ jobs:
       NIM_ARCH: ${{ matrix.target.cpu }}
     steps:
       - name: Checkout threading
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: threading
           submodules: false
