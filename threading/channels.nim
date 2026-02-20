@@ -223,7 +223,7 @@ proc drainChannel[T](chan: ChannelRaw) =
   release(chan.L)
 
 proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bool,
-                 timeout: Duration = default(Duration)): bool =
+                 timeout = default(Duration)): bool =
   assert not chan.isNil
   assert not data.isNil
 
@@ -276,7 +276,7 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
   result = true
 
 proc channelReceive(chan: ChannelRaw, data: pointer, size: int, blocking: static bool,
-                    timeout: Duration = default(Duration)): bool =
+                    timeout = default(Duration)): bool =
   assert not chan.isNil
   assert not data.isNil
 
@@ -335,7 +335,6 @@ template frees(c) =
     # this `fetchSub` returns current val then subs
     # so count == 0 means we're the last
     if c.d.atomicCounter.fetchSub(1, moAcquireRelease) == 0:
-      stopRaw(c.d)
       drainChannel[T](c.d)
       freeChannel(c.d)
 
@@ -374,7 +373,7 @@ proc trySend*[T](c: Chan[T], src: sink Isolated[T]): bool {.inline.} =
   ##
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
-  result = channelSend(c.d, src.addr, sizeof(T), false, default(Duration))
+  result = channelSend(c.d, src.addr, sizeof(T), false)
   if result:
     wasMoved(src)
 
@@ -402,7 +401,7 @@ proc tryTake*[T](c: Chan[T], src: var Isolated[T]): bool {.inline.} =
   ##
   ## Returns `false` if the message was not sent because the number of pending
   ## messages in the channel exceeded its capacity.
-  result = channelSend(c.d, src.addr, sizeof(T), false, default(Duration))
+  result = channelSend(c.d, src.addr, sizeof(T), false)
   if result:
     wasMoved(src)
 
@@ -417,10 +416,10 @@ proc tryRecv*[T](c: Chan[T], dst: var T): bool {.inline.} =
   ##    operations.
   ##
   ## Returns `false` and does not change `dist` if no message was received.
-  channelReceive(c.d, dst.addr, sizeof(T), false, default(Duration))
+  channelReceive(c.d, dst.addr, sizeof(T), false)
 
 proc send*[T](c: Chan[T], src: sink Isolated[T],
-              timeout: Duration = default(Duration)): bool {.inline, discardable.} =
+              timeout = default(Duration)): bool {.inline, discardable.} =
   ## Sends the message `src` to the channel `c`.
   ## This blocks the sending thread until `src` was successfully sent.
   ##
@@ -437,13 +436,13 @@ proc send*[T](c: Chan[T], src: sink Isolated[T],
   if result:
     wasMoved(src)
 
-template send*[T](c: Chan[T]; src: T; timeout: Duration = default(Duration)): bool =
+template send*[T](c: Chan[T]; src: T; timeout = default(Duration)): bool =
   ## Helper template for `send`.
   mixin isolate
   send(c, isolate(src), timeout)
 
 proc recv*[T](c: Chan[T], dst: var T,
-              timeout: Duration = default(Duration)): bool {.inline, discardable.} =
+              timeout = default(Duration)): bool {.inline, discardable.} =
   ## Receives a message from the channel `c` and fill `dst` with its value.
   ##
   ## This blocks the receiving thread until a message was successfully received.
@@ -458,14 +457,14 @@ proc recv*[T](c: Chan[T], dst: var T,
 proc recv*[T](c: Chan[T]): T {.inline.} =
   ## Receives a message from the channel.
   ## A version of `recv`_ that returns the message.
-  let ok = channelReceive(c.d, result.addr, sizeof(T), true, default(Duration))
+  let ok = channelReceive(c.d, result.addr, sizeof(T), true)
   if not ok:
     raise newException(ValueError, "channel stopped")
 
 proc recvIso*[T](c: Chan[T]): Isolated[T] {.inline.} =
   ## Receives a message from the channel.
   ## A version of `recv`_ that returns the message and isolates it.
-  let ok = channelReceive(c.d, result.addr, sizeof(T), true, default(Duration))
+  let ok = channelReceive(c.d, result.addr, sizeof(T), true)
   if not ok:
     raise newException(ValueError, "channel stopped")
 
