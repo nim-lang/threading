@@ -1,4 +1,4 @@
-import sync/channels
+import threading/channels
 import std/[os, times, isolation]
 
 type
