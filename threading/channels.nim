@@ -17,6 +17,8 @@
 ## This module works only with one of `--mm:arc` / `--mm:atomicArc` / `--mm:orc`
 ## compilation flags.
 ##
+## .. warning:: This module is experimental and its interface may change.
+##
 ## This module implements multi-producer multi-consumer channels - a concurrency
 ## primitive with a high-level interface intended for communication and
 ## synchronization between threads. It allows sending and receiving typed, isolated
@@ -241,7 +243,7 @@ proc channelSend(chan: ChannelRaw, data: pointer, size: int, blocking: static bo
         return false
       if useTimeout:
         release(chan.L)
-        if (getTime() - startedAt) >= timeout:
+        if timeout <= (getTime() - startedAt):
           return false
         sleep(TimeoutPollMs)
         acquire(chan.L)
@@ -293,7 +295,7 @@ proc channelReceive(chan: ChannelRaw, data: pointer, size: int, blocking: static
         return false
       if useTimeout:
         release(chan.L)
-        if (getTime() - startedAt) >= timeout:
+        if timeout <= (getTime() - startedAt):
           return false
         sleep(TimeoutPollMs)
         acquire(chan.L)
