@@ -6,34 +6,34 @@ discard """
 import threading/channels
 import std/os
 
-var chan = newChan[string]()
+var (sender, receiver) = newChan[string]()
 
 # This proc will be run in another thread using the threads module.
-proc firstWorker() =
-  chan.send("Hello World!")
+proc firstWorker(s: Sender[string]) =
+  discard s.send("Hello World!")
 
 # This is another proc to run in a background thread. This proc takes a while
 # to send the message since it sleeps for 2 seconds (or 2000 milliseconds).
-proc secondWorker() =
+proc secondWorker(s: Sender[string]) =
   sleep(2000)
-  chan.send("Another message")
+  discard s.send("Another message")
 
 
 # Launch the worker.
-var worker1: Thread[void]
-createThread(worker1, firstWorker)
+var worker1: Thread[Sender[string]]
+createThread(worker1, firstWorker, sender)
 
 # Block until the message arrives, then print it out.
 var dest = ""
-chan.recv(dest)
+discard receiver.recv(dest)
 doAssert dest == "Hello World!"
 
 # Wait for the thread to exit before moving on to the next example.
 worker1.joinThread()
 
 # Launch the other worker.
-var worker2: Thread[void]
-createThread(worker2, secondWorker)
+var worker2: Thread[Sender[string]]
+createThread(worker2, secondWorker, sender)
 # This time, use a non-blocking approach with tryRecv.
 # Since the main thread is not blocked, it could be used to perform other
 # useful work while it waits for data to arrive on the channel.
@@ -41,7 +41,7 @@ createThread(worker2, secondWorker)
 var messages: seq[string]
 var msg = ""
 while true:
-  let tried = chan.tryRecv(msg)
+  let tried = receiver.tryRecv(msg)
   if tried:
     messages.add move(msg)
     break
@@ -60,8 +60,8 @@ doAssert messages.len >= 2
 
 
 block:
-  let chan0 = newChan[int]()
-  let chan1 = chan0
+  let (s0, r0) = newChan[int]()
+  let s1 = s0
   block:
-    let chan3 = chan0
-    let chan4 = chan0
+    let s2 = s0
+    let s3 = s0

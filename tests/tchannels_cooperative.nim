@@ -10,27 +10,27 @@ const
   sentmsg = "task sent"
 
 type
-  Payload = tuple[chan: Chan[int16], idx: int16]
+  Payload = tuple[sender: Sender[int16], idx: int16]
 
 var
   sentmessages = newSeqOfCap[string](NTasks)
   receivedmessages = newSeqOfCap[int16](NTasks)
 
 # A prototype of a task executing thread
-proc runner(tasksCh: Chan[Payload]) {.thread.} =
+proc runner(tasksCh: Receiver[Payload]) {.thread.} =
   var p: Payload
   while true:
-    tasksCh.recv(p) # Get a message from the main thread
+    discard tasksCh.recv(p) # Get a message from the main thread
     if p.idx == -1: break # Check for an ad hoc stop signal
     else:
       sleep(SleepDurationMS) # Hard work
-      p.chan.send(p.idx) # Notify a consumer
+      discard p.sender.send(p.idx) # Notify a consumer
 
 # A single thread receiving result from runner threads
-proc consumer(args: tuple[resultsCh: Chan[int16], tasks: int16]) {.thread.} =
+proc consumer(args: tuple[resultsCh: Receiver[int16], tasks: int16]) {.thread.} =
   var idx: int16
   for _ in 0..<args.tasks: # We know the number of tasks and wait for them all
-    args.resultsCh.recv(idx)
+    discard args.resultsCh.recv(idx)
     {.gcsafe.}: # Don't do this. Here we know it's an exclusive access
       receivedmessages.add(idx) # Store which task was completed
 
@@ -38,22 +38,23 @@ proc main(chanSize: Natural) =
   sentmessages.setLen(0)
   receivedmessages.setLen(0)
   var
-    taskThreads = newSeq[Thread[Chan[Payload]]](countProcessors())
-    tasksCh = newChan[Payload](chanSize)
-    consumerTh: Thread[(Chan[int16], int16)]
-    resultsCh = newChan[int16](chanSize)
+    taskThreads = newSeq[Thread[Receiver[Payload]]](countProcessors())
+    consumerTh: Thread[tuple[resultsCh: Receiver[int16], tasks: int16]]
+  let
+    (tasksSender, tasksReceiver) = newChan[Payload](chanSize)
+    (resultsSender, resultsReceiver) = newChan[int16](chanSize)
 
   # Consumer must be ready first to not block
-  createThread(consumerTh, consumer, (resultsCh, NTasks))
+  createThread(consumerTh, consumer, (resultsReceiver, NTasks))
   # Start runner threads
-  for i in 0..high(taskThreads): createThread(taskThreads[i], runner, tasksCh)
+  for i in 0..high(taskThreads): createThread(taskThreads[i], runner, tasksReceiver)
   # Loop iterating fake data
   for idx in 0'i16..<NTasks:
-    tasksCh.send((resultsCh, idx))
+    discard tasksSender.send((resultsSender, idx))
     sentmessages.add(sentmsg)
 
   for _ in taskThreads: # Stopping worker threads
-    tasksCh.send((resultsCh, -1'i16)) # A thread can't get more than 1 stop signal
+    discard tasksSender.send((resultsSender, -1'i16)) # A thread can't get more than 1 stop signal
   joinThreads(taskThreads)
   joinThread(consumerTh)
 

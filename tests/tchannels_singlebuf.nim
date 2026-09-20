@@ -8,27 +8,27 @@ const Message = "Hello"
 block trySend_recv:
   var attempts = 0
 
-  proc test(chan: Chan[string]) {.thread.} =
+  proc test(s: Sender[string]) {.thread.} =
     var notSent = true
     let msg = Message
     while notSent:
-      notSent = not chan.trySend(msg)
+      notSent = not s.trySend(msg)
       if notSent:
         atomicInc(attempts)
 
-  var chan = newChan[string](elements = 1)
+  var (s, r) = newChan[string](elements = 1)
   # Fill the channel before spawning the thread
-  chan.send("Dummy message")
+  discard s.send("Dummy message")
 
-  var thread: Thread[Chan[string]]
-  createThread(thread, test, chan)
+  var thread: Thread[Sender[string]]
+  createThread(thread, test, s)
   sleep 10
 
   # Receive the dummy message to make room for the real message
-  discard chan.recv()
+  discard r.recv()
 
   var dest: string
-  chan.recv(dest)
+  discard r.recv(dest)
   doAssert dest == Message
 
   thread.joinThread()
@@ -38,24 +38,23 @@ block trySend_recv:
 block send_tryRecv:
   var attempts = 0
 
-  proc test(chan: Chan[string]) {.thread.} =
+  proc test(r: Receiver[string]) {.thread.} =
     var notReceived = true
     var msg: string
     while notReceived:
-      notReceived = not chan.tryRecv(msg)
+      notReceived = not r.tryRecv(msg)
       if notReceived:
         atomicInc(attempts)
     doAssert msg == Message
 
-  var chan = newChan[string](elements = 1)
+  var (s, r) = newChan[string](elements = 1)
 
-  var thread: Thread[Chan[string]]
-  createThread(thread, test, chan)
+  var thread: Thread[Receiver[string]]
+  createThread(thread, test, r)
   sleep 10
 
   let src = Message
-  chan.send(src)
+  discard s.send(src)
 
   thread.joinThread()
   doAssert attempts > 0, "tryRecv should have been attempted multiple times"
-
