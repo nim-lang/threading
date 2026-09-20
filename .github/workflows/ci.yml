@@ -207,6 +207,33 @@ jobs:
           version: ${{ matrix.target.nim_branch }}
           architecture: ${{ matrix.target.cpu }}
 
+      - name: Seed the nimble package list
+        shell: bash
+        run: |
+          # `nimble test` refreshes the official package list on a runner that
+          # has no `~/.nimble` yet, and the 32-bit Windows nimble binary
+          # segfaults doing it:
+          #
+          #   Downloading Official package list
+          #   SIGSEGV: Illegal storage access. (Attempt to read from nil?)
+          #
+          # It dies there before compiling a single test, which is why the two
+          # windows-i386 rows were the only red ones. The crash is nimble's
+          # own: the same 32-bit Nim fetches the same URL over HTTPS fine via
+          # std/httpclient, a plain-http list URL crashes identically, and
+          # `--offline` does not skip the download. Writing the list ourselves
+          # means nimble has nothing to refresh. Harmless on the rows that
+          # already work, and it keeps every row off nimble's network path.
+          #
+          # Fetched from the packages repo rather than from
+          # packages.nim-lang.org, which serves a 403 to anything that is not
+          # nimble (curl gets it with or without a browser User-Agent). The
+          # two are the same bytes: the file this writes is checksum-identical
+          # to the one a working `nimble refresh` leaves behind.
+          mkdir -p "$HOME/.nimble"
+          curl -fsSL https://raw.githubusercontent.com/nim-lang/packages/master/packages.json \
+            -o "$HOME/.nimble/packages_official.json"
+
       - name: Run tests
         # No flags here: `--threads:on`, `--mm:arc` and the per-target
         # compiler/sanitizer choice all live in tests/nim.cfg, which nimble
