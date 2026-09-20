@@ -23,33 +23,42 @@
 </head>
 <body>
   <div class="document" id="documentId">
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" id="nav-burger">&#9776;</label>
+    <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">threading/smartptrs</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
-      <label for="theme-select">Theme:&nbsp;</label>
-      <select id="theme-select" onchange="setTheme(this.value)">
-        <option value="auto">🌗 Match OS</option>
-        <option value="dark">🌑 Dark</option>
-        <option value="light">🌕 Light</option>
-      </select>
-    </div>
+  <label for="theme-select">Theme:&nbsp;</label>
+  <select id="theme-select" onchange="setTheme(this.value)">
+    <option value="auto">🌗 Match OS</option>
+    <option value="dark">🌑 Dark</option>
+    <option value="light">🌕 Light</option>
+  </select>
+</div>
+
     <div id="global-links">
-      <ul class="simple">
-        <li><a id="indexLink" href="theindex.html">Index</a></li>
-      </ul>
-    </div>
-    <div id="searchInputDiv">
-      Search: <input type="search" id="searchInput" oninput="search()"/>
-    </div>
-    <div>
-      Group by:
-      <select onchange="groupBy(this.value)">
-        <option value="section">Section</option>
-        <option value="type">Type</option>
-      </select>
-    </div>
+  
+  <ul class="simple">
+  <li><a id="indexLink" href="theindex.html">Index</a></li>
+</ul>
+
+</div>
+
+      <div id="searchInputDiv">
+  Search: <input type="search" id="searchInput" oninput="search()"/>
+</div>
+
+    <div class="search-groupby">
+  Group by:
+  <select onchange="groupBy(this.value)">
+    <option value="section">Section</option>
+    <option value="type">Type</option>
+  </select>
+</div>
+
     <ul class="simple simple-toc" id="toc-list">
   <li>
   <details open>
@@ -171,7 +180,7 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="ConstPtr">
-  <dt><pre><a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Distinct version of <tt class="docutils literal"><span class="pre"><span class="Identifier">SharedPtr</span><span class="Punctuation">[</span><span class="Identifier">T</span><span class="Punctuation">]</span></span></tt>, which doesn't allow mutating the underlying value.
@@ -181,7 +190,7 @@
   </dd>
 </div>
 <div id="SharedPtr">
-  <dt><pre><a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dt><pre><a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
     Shared ownership reference counting pointer.
@@ -191,7 +200,7 @@
   </dd>
 </div>
 <div id="UniquePtr">
-  <dt><pre><a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dt><pre><a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
     Non copyable pointer to a value of type <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> with exclusive ownership.
@@ -208,7 +217,7 @@
   <dl class="item">
     <div id="$-procs-all">
   <div id="$,ConstPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CConstPtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CConstPtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -218,7 +227,7 @@
   </dd>
 </div>
 <div id="$,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CSharedPtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CSharedPtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -228,7 +237,7 @@
   </dd>
 </div>
 <div id="$,UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CUniquePtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CUniquePtr%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -241,7 +250,7 @@
 </div>
 <div id="=copy-procs-all">
   <div id="=copy,SharedPtr[T],SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CSharedPtr%5BT%5D%2CSharedPtr%5BT%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CSharedPtr%5BT%5D%2CSharedPtr%5BT%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -251,7 +260,7 @@
   </dd>
 </div>
 <div id="=copy,UniquePtr[T],UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CUniquePtr%5BT%5D%2CUniquePtr%5BT%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">error</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CUniquePtr%5BT%5D%2CUniquePtr%5BT%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">error</span>.}</pre></dt>
   <dd>
     
     The copy operation is disallowed for <tt class="docutils literal"><span class="pre"><span class="Identifier">UniquePtr</span></span></tt>, it can only be moved.
@@ -264,7 +273,7 @@
 </div>
 <div id="=destroy-procs-all">
   <div id="=destroy,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CSharedPtr%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CSharedPtr%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -274,7 +283,7 @@
   </dd>
 </div>
 <div id="=destroy,UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CUniquePtr%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CUniquePtr%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -287,7 +296,7 @@
 </div>
 <div id="=dup-procs-all">
   <div id="=dup,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddup%2CSharedPtr%5BT%5D"><span class="Identifier">`=dup`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">src</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddup%2CSharedPtr%5BT%5D"><span class="Identifier">`=dup`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">src</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -297,7 +306,7 @@
   </dd>
 </div>
 <div id="=dup,UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddup%2CUniquePtr%5BT%5D"><span class="Identifier">`=dup`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">src</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">error</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddup%2CUniquePtr%5BT%5D"><span class="Identifier">`=dup`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">src</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">error</span>.}</pre></dt>
   <dd>
     
     The dup operation is disallowed for <tt class="docutils literal"><span class="pre"><span class="Identifier">UniquePtr</span></span></tt>, it can only be moved.
@@ -310,7 +319,7 @@
 </div>
 <div id="=wasMoved-procs-all">
   <div id="=wasMoved,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3DwasMoved%2CSharedPtr%5BT%5D"><span class="Identifier">`=wasMoved`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3DwasMoved%2CSharedPtr%5BT%5D"><span class="Identifier">`=wasMoved`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -323,7 +332,7 @@
 </div>
 <div id="[]-procs-all">
   <div id="[],ConstPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CConstPtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CConstPtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     Returns an immutable view of the internal value of <tt class="docutils literal"><span class="pre"><span class="Identifier">p</span></span></tt>.
@@ -333,7 +342,7 @@
   </dd>
 </div>
 <div id="[],SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CSharedPtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CSharedPtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -343,7 +352,7 @@
   </dd>
 </div>
 <div id="[],UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CUniquePtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CUniquePtr%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     Returns a mutable view of the internal value of <tt class="docutils literal"><span class="pre"><span class="Identifier">p</span></span></tt>.
@@ -356,7 +365,7 @@
 </div>
 <div id="[]=-procs-all">
   <div id="[]=,ConstPtr[T],T">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CConstPtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">v</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">error</span><span class="Other">:</span> <span class="StringLit">&quot;`ConstPtr` cannot be assigned.&quot;</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CConstPtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">v</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">error</span><span class="Other">:</span> <span class="StringLit">&quot;`ConstPtr` cannot be assigned.&quot;</span>.}</pre></dt>
   <dd>
     
     
@@ -366,7 +375,7 @@
   </dd>
 </div>
 <div id="[]=,SharedPtr[T],sinkIsolated[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CSharedPtr%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CSharedPtr%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -376,7 +385,7 @@
   </dd>
 </div>
 <div id="[]=,UniquePtr[T],sinkIsolated[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CUniquePtr%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CUniquePtr%5BT%5D%2CsinkIsolated%5BT%5D"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -389,7 +398,7 @@
 </div>
 <div id="isNil-procs-all">
   <div id="isNil,ConstPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CConstPtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CConstPtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -399,7 +408,7 @@
   </dd>
 </div>
 <div id="isNil,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CSharedPtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CSharedPtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -409,7 +418,7 @@
   </dd>
 </div>
 <div id="isNil,UniquePtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CUniquePtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CUniquePtr%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -422,7 +431,7 @@
 </div>
 <div id="isUniqueRef-procs-all">
   <div id="isUniqueRef,SharedPtr[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isUniqueRef%2CSharedPtr%5BT%5D"><span class="Identifier">isUniqueRef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#isUniqueRef%2CSharedPtr%5BT%5D"><span class="Identifier">isUniqueRef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
     
@@ -435,7 +444,7 @@
 </div>
 <div id="newConstPtr-procs-all">
   <div id="newConstPtr,sinkIsolated[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newConstPtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span><span class="Other">,</span> <span class="Identifier">inline</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newConstPtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span><span class="Other">,</span> <span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     Similar to <a class="reference external" href="#newSharedPtr,T">newSharedPtr</a>, but the underlying value can't be mutated.
@@ -448,7 +457,7 @@
 </div>
 <div id="newSharedPtr-procs-all">
   <div id="newSharedPtr,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newSharedPtr%2Ctypedesc%5BT%5D"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newSharedPtr%2Ctypedesc%5BT%5D"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Returns a shared pointer. It is not initialized, so reading from it before writing to it is undefined behaviour!
@@ -458,7 +467,7 @@
   </dd>
 </div>
 <div id="newSharedPtr,sinkIsolated[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newSharedPtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newSharedPtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span>.}</pre></dt>
   <dd>
     
     Returns a shared pointer which shares ownership of the object by reference counting.
@@ -471,7 +480,7 @@
 </div>
 <div id="newUniquePtr-procs-all">
   <div id="newUniquePtr,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newUniquePtr%2Ctypedesc%5BT%5D"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newUniquePtr%2Ctypedesc%5BT%5D"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Returns a unique pointer. It is not initialized, so reading from it before writing to it is undefined behaviour!
@@ -481,7 +490,7 @@
   </dd>
 </div>
 <div id="newUniquePtr,sinkIsolated[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newUniquePtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newUniquePtr%2CsinkIsolated%5BT%5D"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Isolated</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">nodestroy</span>.}</pre></dt>
   <dd>
     
     Returns a unique pointer which has exclusive ownership of the value.
@@ -500,7 +509,7 @@
   <dl class="item">
     <div id="[]=-templates-all">
   <div id="[]=.t,SharedPtr[T],T">
-  <dt><pre><span class="Keyword">template</span> <a href="#%5B%5D%3D.t%2CSharedPtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">template</span> <a href="#%5B%5D%3D.t%2CSharedPtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -510,7 +519,7 @@
   </dd>
 </div>
 <div id="[]=.t,UniquePtr[T],T">
-  <dt><pre><span class="Keyword">template</span> <a href="#%5B%5D%3D.t%2CUniquePtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">template</span> <a href="#%5B%5D%3D.t%2CUniquePtr%5BT%5D%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -523,7 +532,7 @@
 </div>
 <div id="newConstPtr-templates-all">
   <div id="newConstPtr.t,T">
-  <dt><pre><span class="Keyword">template</span> <a href="#newConstPtr.t%2CT"><span class="Identifier">newConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">template</span> <a href="#newConstPtr.t%2CT"><span class="Identifier">newConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="#ConstPtr"><span class="Identifier">ConstPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -536,7 +545,7 @@
 </div>
 <div id="newSharedPtr-templates-all">
   <div id="newSharedPtr.t,T">
-  <dt><pre><span class="Keyword">template</span> <a href="#newSharedPtr.t%2CT"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">template</span> <a href="#newSharedPtr.t%2CT"><span class="Identifier">newSharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="#SharedPtr"><span class="Identifier">SharedPtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -549,7 +558,7 @@
 </div>
 <div id="newUniquePtr-templates-all">
   <div id="newUniquePtr.t,T">
-  <dt><pre><span class="Keyword">template</span> <a href="#newUniquePtr.t%2CT"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="smartptrs.html#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dt><pre><span class="Keyword">template</span> <a href="#newUniquePtr.t%2CT"><span class="Identifier">newUniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <a href="#UniquePtr"><span class="Identifier">UniquePtr</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -570,7 +579,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-08-12 05:59:37 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-09-20 20:41:25 UTC</small>
       </div>
     </div>
   </div>
