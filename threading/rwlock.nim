@@ -56,6 +56,11 @@ else:
 proc `=sink`*(dest: var RwLock; source: RwLock) {.error.}
 proc `=copy`*(dest: var RwLock; source: RwLock) {.error.}
 
+proc init*(rw: var RwLock) =
+  zeroMem(addr rw, sizeof(RwLock))
+  initCond(rw.c)
+  initLock(rw.L)
+
 proc createRwLock*(): RwLock =
   result = default(RwLock)
   initCond(result.c)
